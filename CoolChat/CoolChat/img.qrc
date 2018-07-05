@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/new/img">
+        <file>img/1.png</file>
+        <file>img/2.png</file>
+        <file>img/3.png</file>
+        <file>img/exit.png</file>
+        <file>img/exit1.png</file>
+        <file>img/min.png</file>
+        <file>img/min2.png</file>
+        <file>img/picture.png</file>
+    </qresource>
+</RCC>
