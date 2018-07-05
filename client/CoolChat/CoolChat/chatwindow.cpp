@@ -16,8 +16,7 @@
 #include <QSplitter>
 #include <QWebEngineView>
 #include <QSizePolicy>
-
-
+#include <QKeyEvent>
 
 //#include "Server.h"
 
@@ -93,7 +92,6 @@ ChatWindow::ChatWindow(QWidget *parent,QString chatID,int chatHeight,int chatWid
     chatSplitter->addWidget(msgShowWindow);
     chatSplitter->addWidget(msgEditWindow);
     chatSplitter->adjustSize();
-    //msgShowWindow->setStyleSheet("QWebEngineView{background-color:rgb(250,250,250);border:none;}");
     msgEditWindow->setStyleSheet("QTextEdit{border:rgb(100,100,100)}");
     chatSplitter->setStretchFactor(0,7);
     chatSplitter->setStretchFactor(1,3);
@@ -104,6 +102,11 @@ ChatWindow::ChatWindow(QWidget *parent,QString chatID,int chatHeight,int chatWid
     m_html = QString::fromUtf8(source.readAll());
     msgShowWindow->setHtml(m_html+"</div>");
     source.close();
+
+    msgShowWindow->setFocusPolicy(Qt::NoFocus);
+    msgEditWindow->setFocusPolicy(Qt::StrongFocus);
+    msgEditWindow->setFocus();
+    msgEditWindow->installEventFilter(this);
 
     //发送按钮
     QFont *font=new QFont("Microsoft YaHei",12,0);
@@ -164,7 +167,7 @@ void ChatWindow::sentBtnOnClicked()
         QTimer::singleShot(2900,this,SLOT(hideFailureTips_3()));
         return;
     }
-    sendMsgShow(msgEditWindow->toPlainText(),NULL);
+    callback(true);
     //msgInEdit = msgEditWindow->toPlainText();
     //std::string s_msgInEdit = msgInEdit.toStdString();
     //std::string s_chatId = this->chatID.toStdString();
@@ -194,10 +197,11 @@ void ChatWindow::callback(bool success)
     else
     {
         sendMsgShow(msgEditWindow->toPlainText(),NULL);
+        msgEditWindow->clear();
     }
 }
 
-//提示：消息发送失败
+//提示 消息发送失败
 void ChatWindow::showFailureTips(QString tipMsg)
 {
     tips = new QLabel(this);
@@ -242,6 +246,8 @@ void ChatWindow::hideFailureTips_3()
 
 void ChatWindow::sendMsgShow(QString msg, QString head)
 {
+    //将换行转换成<br>,否则html仅显示为空格
+    msg.replace("\n","<br>");
     QString html = QString("<div class='msg-wrap right'><img class='header' src='qrc:/new/img/img/FaceQ.jpg' ><div class='msg'>%1<span class='trigon'></span></div></div>").arg(msg);
     m_html.append(html);
     msgShowWindow->setHtml(m_html+"</div>");
@@ -257,3 +263,18 @@ void ChatWindow::recvMsgShow(QString msg, QString head)
     msgShowWindow->show();
 }
 
+//按下Ctrl+Enter发送消息
+bool ChatWindow::eventFilter(QObject *obj, QEvent *e)
+{
+    Q_ASSERT(obj == msgEditWindow);
+    if (e->type() == QEvent::KeyPress)
+    {
+        QKeyEvent *event = static_cast<QKeyEvent*>(e);
+        if (event->key() == Qt::Key_Return && (event->modifiers() & Qt::ControlModifier))
+        {
+            sentBtnOnClicked();//发送消息的槽
+            return true;
+        }
+    }
+    return false;
+}

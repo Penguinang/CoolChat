@@ -45,6 +45,10 @@ private:
     void sendMsgShow(QString,QString);
     void recvMsgShow(QString,QString);
 
+protected:
+    bool eventFilter(QObject *,QEvent *);
+
+
     //服务类对象
     //Server *m_server;
 
