@@ -20,7 +20,7 @@ class ChatWindow : public QWidget
     Q_OBJECT
 
 public:
-    ChatWindow(QWidget *parent = 0,QString chatID = "Anon",int chatHeight=800,int chatWidth=1500);
+    ChatWindow(QWidget *parent = 0,QString chatID = "Anon",int chatHeight=800,int chatWidth=800);
     ~ChatWindow();
 
 private:
@@ -34,11 +34,16 @@ private:
     QTextEdit* msgEditWindow;//消息编辑框
     QString msgInEdit;//输入框中的文字信息
     QLabel* tips;//提示消息
+    bool m_tips;//提示消息是否出现
+    QString m_head;
+    QString f_head;
+    QString m_html;
 
     void paintEvent(QPaintEvent *);
     void callback(bool);
-    void showFailureTips();
-
+    void showFailureTips(QString);
+    void sendMsgShow(QString,QString);
+    void recvMsgShow(QString,QString);
 
     //服务类对象
     //Server *m_server;
