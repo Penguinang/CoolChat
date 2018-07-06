@@ -3,12 +3,14 @@
 
 #include <addfriend.h>
 #include <chatwindow.h>
+#include <chatwindow.h>
 #include <QWidget>
 #include <QtGUi>
 #include <QLabel>
 #include <QListWidget>
 #include <QString>
 #include <QStackedWidget>
+#include <QPainter>
 
 namespace Ui {
 class MainWindow;
@@ -24,11 +26,16 @@ public:
 private:
     void chat();
     AddFriend *addWindow;
+    ChatWindow *chatWindow;
     QStackedWidget *m_cStackedWidget;
+    //好友列表框
+    void paintEvent(QPaintEvent*);
+    QPainter *paint;
 
 private slots:
     void AnotherWindow();
-    void ShowChatWindow(QString string = "Anon",int index = 0);
+    void ShowChatWindow_1();
+    void ShowChatWindow_2();
 
 };
 
