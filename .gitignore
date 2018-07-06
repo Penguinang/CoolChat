@@ -1,1 +1,3 @@
 server/target/*
+client/Netmodule/test/testServer
+client/Netmodule/test/testClient
