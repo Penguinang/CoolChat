@@ -141,9 +141,13 @@ void LoginWindow::windowmin()
 //登陆按钮slot函数
 void LoginWindow::slotLogin()
 {
-    //TODO：对输入的处理，例如对密码的要求不能输入中文等
-    this->getUserName();
-    this->getPassWord();
+    getUserName();
+    //对输入的处理，例如对密码的要求不能输入中文等
+    if(checkUserName(g_username)==false)
+    {
+        //提示错误（不能为空 或 不能为中文 或 长度太长 或 长度太短）
+        return;
+    }
     void (LoginWindow::*pCallback)(bool,std::string)= &LoginWindow::callback;
     //通知服务器登录
     //m_server->Login(g_username.toStdString(),g_password.toStdString(),pCallback);
@@ -215,3 +219,10 @@ void LoginWindow::callback(bool success,std::string extra)
         inf->setPalette(pa);
     }
 }
+
+//检查用户名格式是否输入正确
+bool LoginWindow::checkUserName(QString string)
+{
+    return true;
+}
+

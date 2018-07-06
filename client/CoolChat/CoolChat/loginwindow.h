@@ -33,6 +33,7 @@ private:
     void getUserName();
     void getPassWord();
     void callback(bool,std::string);
+    bool checkUserName(QString);
 
     QLabel *userNameLabel;
     QLabel *passWordLabel;
