@@ -14,6 +14,7 @@
 #include <QMouseEvent>
 #include <QString>
 #include <QDebug>
+#include <QGraphicsOpacityEffect>
 
 
 LoginWindow::LoginWindow(QWidget *parent)
@@ -141,27 +142,26 @@ void LoginWindow::windowmin()
 //登陆按钮slot函数
 void LoginWindow::slotLogin()
 {
-    getUserName();
-    //对输入的处理，例如对密码的要求不能输入中文等
-    if(checkUserName(g_username)==false)
+    //初步判断用户输入格式，并通知服务器登录
+    if(getUserName()&&getPassWord()==true)
     {
-        //提示错误（不能为空 或 不能为中文 或 长度太长 或 长度太短）
-        return;
-    }
     void (LoginWindow::*pCallback)(bool,std::string)= &LoginWindow::callback;
-    //通知服务器登录
+    //TODO：通知服务器登录
     //m_server->Login(g_username.toStdString(),g_password.toStdString(),pCallback);
     MainWindow* mainwin = new MainWindow();
     mainwin->show();
     this->close();
+    }
 }
 
+//注册按钮slot函数
 void LoginWindow::slotRegister()
 {
     registerWindow = new RegisterWindow();
     registerWindow ->show();
 }
 
+//重写鼠标事件，页面位置随鼠标拖拽改变
 void LoginWindow::mouseMoveEvent(QMouseEvent *event)
 {
     if(mbKeepPressed)
@@ -188,17 +188,51 @@ void LoginWindow::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
-void LoginWindow::getUserName()
+//获取用户名输入，并对格式进行初步判断
+bool LoginWindow::getUserName()
 {
     g_username = userNameLineEdit->text();
-    qDebug("%s",qPrintable(g_username));
+    if(g_username == NULL && m_tips == false)
+    {
+        showTips(tr("用户名不能为空！"));
+        return false;
+    }
+    if(g_username.size()>10 && m_tips == false)
+    {
+        showTips(tr("用户名输入有误！"));
+        return false;
+    }
+    return true;
 }
 
-void LoginWindow::getPassWord()
+//获取用户密码输入，并对格式进行初步判断
+bool LoginWindow::getPassWord()
 {
     g_password = passWordLineEdit->text();
-    qDebug("%s",qPrintable(g_password));
-
+    if(g_password == NULL && m_tips == false)
+    {
+        showTips(tr("密码不能为空！"));
+        return false;
+    }
+    if((g_password.size()<6||g_password.size()>16) && m_tips == false)
+    {
+        showTips(tr("密码长度有误！"));
+    }
+    int lenth = g_password.length();
+    QByteArray by = g_password.toLocal8Bit();
+    for(int index=0;index<lenth;index++)
+    {
+        char c = by.at(index);
+        if((c>=48&&c<=57) || (c>=65&&c<=90) || (c>=97&&c<=122))
+        {
+        }
+        else
+        {
+            showTips(tr("密码中含有非法字符！"));
+            return false;
+        }
+    }
+    return true;
 }
 
 void LoginWindow::callback(bool success,std::string extra)
@@ -220,9 +254,53 @@ void LoginWindow::callback(bool success,std::string extra)
     }
 }
 
-//检查用户名格式是否输入正确
-bool LoginWindow::checkUserName(QString string)
+//显示提示消息框并渐变效果隐藏消失
+void LoginWindow::showTips(QString tipMsg)
 {
-    return true;
+    tips = new QLabel(this);
+    tips->setMaximumHeight(50);
+    tips->setMinimumHeight(50);
+    QFont *font=new QFont("Microsoft YaHei",12,0);
+    tips->setFont(*font);
+    tips->setText(tipMsg);
+    tips->setStyleSheet("QLabel{background-color:red;color:white;border-radius:10px;padding:2px 4px;}");
+    tips->adjustSize();
+    tips->move((this->width()-tips->width())/2,(this->height()-tips->height())/2);
+    tips->show();
+    m_tips = true;
+    QTimer::singleShot(3000,this,SLOT(hideTips()));
+    QTimer::singleShot(2700,this,SLOT(hideTips_1()));
+    QTimer::singleShot(2800,this,SLOT(hideTips_2()));
+    QTimer::singleShot(2900,this,SLOT(hideTips_3()));
 }
+
+//提示消息框渐变隐藏消失
+void LoginWindow::hideTips()
+{
+    tips->hide();
+    m_tips=false;
+}
+
+void LoginWindow::hideTips_1()
+{
+    QGraphicsOpacityEffect *opacityEffect=new QGraphicsOpacityEffect;
+    tips->setGraphicsEffect(opacityEffect);
+    opacityEffect->setOpacity(0.8);
+}
+
+void LoginWindow::hideTips_2()
+{
+    QGraphicsOpacityEffect *opacityEffect=new QGraphicsOpacityEffect;
+    tips->setGraphicsEffect(opacityEffect);
+    opacityEffect->setOpacity(0.5);
+}
+
+void LoginWindow::hideTips_3()
+{
+    QGraphicsOpacityEffect *opacityEffect=new QGraphicsOpacityEffect;
+    tips->setGraphicsEffect(opacityEffect);
+    opacityEffect->setOpacity(0.2);
+}
+
+
 

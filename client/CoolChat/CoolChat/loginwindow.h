@@ -30,10 +30,11 @@ public:
 private:
 
     void paintEvent(QPaintEvent *);
-    void getUserName();
-    void getPassWord();
+    bool getUserName();
+    bool getPassWord();
     void callback(bool,std::string);
     bool checkUserName(QString);
+    void showTips(QString);
 
     QLabel *userNameLabel;
     QLabel *passWordLabel;
@@ -56,12 +57,19 @@ private:
     QString g_username;
     QString g_password;
 
+    QLabel* tips;//提示消息
+    bool m_tips;//提示消息是否出现
+
 
 private slots:
     void windowclosed();
     void windowmin();
     void slotLogin();
     void slotRegister();
+    void hideTips();
+    void hideTips_1();
+    void hideTips_2();
+    void hideTips_3();
 
 };
 
