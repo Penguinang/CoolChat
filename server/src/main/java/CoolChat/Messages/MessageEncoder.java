@@ -1,4 +1,4 @@
-package learn.Messages;
+package CoolChat.Messages;
 
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
@@ -11,7 +11,7 @@ public class MessageEncoder implements ProtocolEncoder{
             return;
         }
         Message msg_obj = (Message)message;
-        out.write(IoBuffer.wrap(msg_obj.GetProtocolEncodedBytes()));
+        out.write(IoBuffer.wrap(msg_obj.getProtocolEncodedBytes()));
     }
 
     public void dispose(IoSession session){

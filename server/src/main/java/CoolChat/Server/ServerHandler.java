@@ -1,4 +1,4 @@
-package learn.mina;
+package CoolChat.Server;
 
 import java.util.HashMap;
 
@@ -6,17 +6,17 @@ import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 
-import learn.DataBase.DBManager;
-import learn.Messages.Message;
+import CoolChat.Data.*;
+import CoolChat.Messages.*;
 
 public class ServerHandler extends IoHandlerAdapter{
     private HashMap<String, IoSession> sessions;
-    private DBManager dbManager;
+    private DataManager dbManager;
 
     public ServerHandler(){
         super();
         sessions = new HashMap<String,IoSession>();
-        dbManager = new DBManager();
+        dbManager = new DataManager();
     }
 
     @Override
@@ -33,6 +33,7 @@ public class ServerHandler extends IoHandlerAdapter{
     public void messageReceived(IoSession session, Object message) throws Exception{
         Message result = ((Message)message).getResult(sessions, session, dbManager);
         if(result != null)
+        	
             session.write(result);
     }
 

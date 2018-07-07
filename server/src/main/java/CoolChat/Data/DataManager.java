@@ -1,5 +1,9 @@
-package Class.Data;
-import Class.lib.LinkedList_string_;
+package CoolChat.Data;
+import java.util.ArrayList;
+import java.util.List;
+
+import dao.*;
+import enity.*;
 
 
 /**
@@ -7,29 +11,8 @@ import Class.lib.LinkedList_string_;
  */
 public class DataManager {
 
-    //
-    // Fields
-    //
-
-    
-    //
-    // Constructors
-    //
     public DataManager () { };
     
-    //
-    // Methods
-    //
-
-
-    //
-    // Accessor methods
-    //
-
-    //
-    // Other methods
-    //
-
     /**
      * 用户注册
      * @return       boolean
@@ -39,6 +22,18 @@ public class DataManager {
      */
     public boolean signUp(String name, String email, String password)
     {
+    	User user = new User();
+    	user.setUserName(name);
+    	user.setPassWord(password);
+    	user.setE_mail(email);
+    	UserDao userDao = new UserDao();
+    	if(userDao.getUserByName(user.getUserName())==null) {
+    		userDao.addUser(user);
+    		return true;
+    	}
+    	else {
+    		return false;
+    	}
     }
 
 
@@ -50,6 +45,13 @@ public class DataManager {
      */
     public boolean login(String userName, String password)
     {
+    	UserDao userDao =new UserDao();
+    	if(userDao.getUserByName(userName).getPassWord().equals(password)) {
+    		return true;
+    	}
+    	else {
+    		return false;
+    	}
     }
 
 
@@ -60,8 +62,27 @@ public class DataManager {
      * @param        sourceUserNameList 发送消息的用户数组
      * @param        contentList 消息内容的数组
      */
-    public boolean pullUserMessage(String userName, Class.lib.LinkedList<string> sourceUserNameList, Class.lib.LinkedList<string> contentList)
+    public boolean pullUserMessage(String userName,List<String> sourceUserNameList, List<String> contentList)
     {
+    	//TODO
+    	SendingMessageDao sendingMessageDao = new SendingMessageDao();
+    	User user  = null;
+    	UserDao userDao =new UserDao();
+    	user=userDao.getUserByName(userName);
+    	
+    	if(sendingMessageDao.listAllMessageOfSentUser(user)!=null) {
+    		List<Message> list=sendingMessageDao.listAllMessageOfSentUser(user);
+    		for(int i=0;i<list.size();i++) {
+    			Message message=list.get(i);
+    			sourceUserNameList.set(i, message.getSentUser());
+    			contentList.set(i, message.getDate()+message.getContent());
+    		}
+    		
+    		return true;
+    	}
+    	else {
+    		return false;
+    	}
     }
 
 
@@ -73,6 +94,14 @@ public class DataManager {
      */
     public void sendText(String sourceUserName, String destUserName, String content)
     {
+    	MessageDao messageDao = new MessageDao();
+    	Message message = new Message();
+    	message.setReceiveUser(destUserName);
+    	message.setSentUser(sourceUserName);
+    	int endIndex=17;
+    	message.setDate(content.substring(0, endIndex));
+    	
+    	messageDao.addMessage(message);
     }
 
 
@@ -81,8 +110,21 @@ public class DataManager {
      * @param        keyword 查询目标关键字
      * @param        userNameList 查询结果的数组
      */
-    public void queryUser(String keyword, Class.lib.LinkedList<string> userNameList)
+    public List<User> queryUser(String keyword)
     {
+    	//TODO
+    	UserDao userDao = new UserDao(); 
+    	List<User> list = new ArrayList<User>();
+    	int length = userDao.getAllUser().size();
+    	User user = null;
+    	for(int i=0;i<length;i++) {
+    		user = userDao.getAllUser().get(i);
+    		if(user.getUserName().contains(keyword)) {
+    			list.add(user);
+    		}
+    	}
+    	
+    	return list;
     }
 
 
@@ -94,6 +136,17 @@ public class DataManager {
      */
     public void changeUserRelation(String user1, String user2, boolean isFriend)
     {
+    	FriendDao friendDao = new FriendDao();
+    	Friend friend = new Friend();
+    	User user = new User();
+    	friend.setName(user2);
+    	user.setUserName(user2);
+    	if(isFriend) {
+    		friendDao.addFriendToUser(friend, user);
+    	}
+    	else {
+    		friendDao.deleteFriendOfUser(friend, user);
+    	}
     }
 
 
@@ -102,8 +155,15 @@ public class DataManager {
      * @param        userName 目标用户名
      * @param        friendList 查询的结果，一个好友名单的数组
      */
-    public void queryFriendList(String userName, Class.lib.LinkedList<string> friendList)
+    public List<Friend> queryFriendList(String userName)
     {
+    	FriendDao friendDao = new FriendDao();
+    	List<Friend> list = new ArrayList<Friend>();
+    	User user = new User();
+    	user.setUserName(userName);
+    	list = friendDao.listAllFriendOfUser(user);
+    	
+    	return list;
     }
 
 
