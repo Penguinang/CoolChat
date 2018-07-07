@@ -1,6 +1,10 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
+#include <string>
+#include <vector>
+using namespace std;
+
 #include "Eio.hh"
 namespace Netmodule{
 
@@ -15,6 +19,7 @@ namespace Netmodule{
         virtual EIoBuffer *getEncodedMessage();
         // Useless in client
         // virtual Message *getResult();
+        virtual void processMessage();
         virtual EString toString();
     };
 
@@ -41,6 +46,10 @@ namespace Netmodule{
  *      2. LoginMessage
  * -------------------------------------------------------------------------------------------------- */ 
     class LoginMessage : public Message{
+    public:
+        typedef void (*LoginCallBack) (bool success, string extra);
+        static LoginCallBack resultCallBack;
+
     private: 
         static unsigned int type_num;
         EString username;
@@ -67,6 +76,7 @@ namespace Netmodule{
         LoginResultMessage(int _retcode);
 
         EIoBuffer *getEncodedMessage();
+        void processMessage();
         EString toString();
     };
 /* --------------------------------------------------------------------------------------------------
@@ -120,6 +130,9 @@ namespace Netmodule{
  *      7. QueryUserInformationMessage
  * -------------------------------------------------------------------------------------------------- */  
     class QueryUserInformationMessage : public Message{
+    public:
+        typedef void (*QueryUserInformationCallBack) (vector<struct userinfo> &user_list);
+        static QueryUserInformationCallBack resultCallBack;
     private:
         static unsigned int type_num;
         EString keyword;
@@ -151,6 +164,9 @@ namespace Netmodule{
  *      9. RequestFriendMessage
  * -------------------------------------------------------------------------------------------------- */  
     class RequestFriendMessage : public Message{
+    public:
+        typedef void (*RequestFriendCallBack) (bool success, bool permission, string cause);
+        static RequestFriendCallBack resultCallBack;
     private:
         static unsigned int type_num;
         EString username;
@@ -237,6 +253,9 @@ namespace Netmodule{
  *      14. QueryFriendListMessage
  * -------------------------------------------------------------------------------------------------- */  
     class QueryFriendListMessage : public Message{
+    public:
+        typedef void (*QueryFriendListMessageCallBack) (vector<struct userinfo> &friends_list);
+        static QueryFriendListMessageCallBack resultCallBack;
     private:
         static unsigned int type_num;
 

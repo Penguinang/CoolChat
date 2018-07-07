@@ -43,6 +43,10 @@ namespace Netmodule{
         DEBUG("BaseMessage Cant be encoded\n");
     }
 
+    void Message::processMessage(){
+        DEBUG("Base Message havnot any function");
+    }
+
     EString Message::toString(){
         return EString("Base Message");
     }
@@ -83,6 +87,7 @@ namespace Netmodule{
      *      2. LoginMessage
      * -------------------------------------------------------------------------------------------------- */   
     unsigned int LoginMessage::type_num = 2;
+    LoginMessage::LoginCallBack LoginMessage::resultCallBack = nullptr;
 
     LoginMessage* LoginMessage::decodeBytes(EIoBuffer *input){
         DEBUG("LoginMessage decode hasnot been implemented\n");
@@ -123,6 +128,21 @@ namespace Netmodule{
 
     EIoBuffer* LoginResultMessage::getEncodedMessage(){
         DEBUG("LoginResult encode hasnot been implemented\n");
+    }
+
+    void LoginResultMessage::processMessage(){
+        bool success = retcode == 0;
+        string extra = "";
+        if(!success){
+            switch(retcode){
+                case 1:
+                case 2:
+                default:
+                    extra = "Login Fail For Unknown Reason";
+            }
+        }
+        LoginMessage::resultCallBack(success, extra);
+        LoginMessage::resultCallBack = nullptr;
     }
 
     EString LoginResultMessage::toString(){
@@ -189,7 +209,12 @@ namespace Netmodule{
     unsigned int TextMessage::type_num = 6;
     
     TextMessage* TextMessage::decodeBytes(EIoBuffer *input){
+        int nameLength = input->getInt();
+        EString name = input->getString(nameLength);
+        int contentLength = input->getInt();
+        EString content = input->getString(contentLength);
 
+        return new TextMessage(name, content);
     }
 
     TextMessage::TextMessage(EString _username, EString _content) : username(_username), content(_content) {}
@@ -215,6 +240,7 @@ namespace Netmodule{
      *      7. QueryUserInformationMessage
      * -------------------------------------------------------------------------------------------------- */ 
     unsigned int QueryUserInformationMessage::type_num = 7; 
+    QueryUserInformationMessage::QueryUserInformationCallBack QueryUserInformationMessage::resultCallBack = nullptr;
 
     QueryUserInformationMessage* QueryUserInformationMessage::decodeBytes(EIoBuffer *input){
         DEBUG("QueryUserInformation decode hasnot been implemented\n");
@@ -267,6 +293,7 @@ namespace Netmodule{
      *      9. RequestFriendMessage
      * -------------------------------------------------------------------------------------------------- */  
     unsigned int RequestFriendMessage::type_num = 9;
+    RequestFriendMessage::RequestFriendCallBack RequestFriendMessage::resultCallBack = nullptr;
 
     RequestFriendMessage* RequestFriendMessage::decodeBytes(EIoBuffer *input){
         DEBUG("RequestFriendMessage decode hasnot been implemented\n");
@@ -400,7 +427,8 @@ namespace Netmodule{
     /* --------------------------------------------------------------------------------------------------
      *      14. QueryFriendListMessage
      * -------------------------------------------------------------------------------------------------- */
-    unsigned int QueryFriendListMessage::type_num = 14; 
+    unsigned int QueryFriendListMessage::type_num = 14;         
+    QueryFriendListMessage::QueryFriendListMessageCallBack  QueryFriendListMessage::resultCallBack = nullptr;
 
     QueryFriendListMessage* QueryFriendListMessage::decodeBytes(EIoBuffer *input){
         DEBUG("QueryFriendListMessage decode hasnot been implemented\n");

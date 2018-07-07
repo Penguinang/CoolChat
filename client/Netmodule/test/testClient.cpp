@@ -87,8 +87,8 @@ void testClient(){
 	ServerHandler *handler = new ServerHandler();
 	connector->setConnectTimeoutMillis(30000L);
 	connector->setHandler(handler);
-	MessageCodecFactory *codecFactory = new MessageCodecFactory();
-	EProtocolCodecFilter *filter = new EProtocolCodecFilter(codecFactory);
+	// MessageCodecFactory *codecFactory = new MessageCodecFactory();
+	// EProtocolCodecFilter *filter = new EProtocolCodecFilter(codecFactory);
 	// Bug of CxxMina, cant use protocolcodecfilter, so just write EIoBuffer
 	// connector->getFilterChain()->addLast("protocol", filter);
 	sp<EIoSession> session = null;
@@ -115,8 +115,8 @@ void testClient(){
 
 	delete connector;
 	delete handler;
-	delete codecFactory;
-	delete filter;
+	// delete codecFactory;
+	// delete filter;
 }
 
 int main(){
