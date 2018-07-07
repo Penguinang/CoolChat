@@ -19,6 +19,7 @@ namespace Netmodule{
  * -------------------------------------------------------------------------------------------------- */  
     class ServerHandler : public EIoHandlerAdapter{
     public:
+        ServerHandler();
         void sessionCreated(sp<EIoSession>& session) THROWS(EException);
         void sessionOpened(sp<EIoSession>& session) THROWS(EException);
         void sessionClosed(sp<EIoSession>& session) THROWS(EException);

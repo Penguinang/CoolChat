@@ -11,6 +11,7 @@ namespace Netmodule{
     public:
         static Message *decodeBytesToMessage(EIoBuffer *input) THROWS(EException);
 
+        Message();
         virtual EIoBuffer *getEncodedMessage();
         // Useless in client
         // virtual Message *getResult();
