@@ -45,6 +45,7 @@ public class SendingMessageDao {
 	/*
 	 * 把所有的信息都列出来
 	 */
+	/*
 	public List<Message> listAllMessageOfUser(User user){
 		List<Message> list =null;
 		PreparedStatement ps = null;
@@ -79,21 +80,26 @@ public class SendingMessageDao {
 			return list;
 		
 		}
+	*/
 	
-	public List<Message> listAllMessageOfSentUser(User user){
+	/**
+	 *把要送出去的消息都列出来 
+	 */
+	public List<Message> listAllMessageOfReceiveUser(User user){
 		List<Message> list =null;
 		PreparedStatement ps = null;
 		Connection conn = util.getConnection();
-		String sql = "select * from s_message where sentUser=?";
+		String sql = "select * from s_message where receiveUser=?";
 		Message message = null;
 		ResultSet rs = null;
 		try {
 			ps=conn.prepareStatement(sql);
-			list=new ArrayList<Message>();
-			ps.setString(1, user.getUserName());
-			ps.setString(2, user.getUserName());
-			rs =ps.executeQuery();
 			
+			list=new ArrayList<Message>();
+			
+			ps.setString(1, user.getUserName());
+			
+			rs =ps.executeQuery();
 			while(rs.next()) {
 				message=new Message();
 //				message.setId(rs.getInt("id"));
@@ -115,24 +121,24 @@ public class SendingMessageDao {
 		
 		}
 	
-	}
 	
-	/*public void deleteMessage(Message message) {
-		//TODO 删除用户
+	
+	 public void deleteMessageByUser(String userName) {
+		//TODO 删除特定用户的待接受消息
 		PreparedStatement ps =null;
 		Connection conn = util.getConnection();
-		String sql="delete from t_message where id=?";
+		String sql="delete from s_message where receiveUser=?";
 		
 		try {
 			ps=conn.prepareStatement(sql);
-			ps.setInt(1,message.getId());
+			ps.setString(1,userName);
 			ps.execute();
 			ps.close();
 			conn.close();
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
-	}*/
+	}
 	
 	/*public void updateUser(User user) {
 		//TODO 更新用户信息
@@ -207,4 +213,6 @@ public class SendingMessageDao {
 		return user;
 		
 	}*/
+	 
+}
 

@@ -14,11 +14,11 @@ public class DataManager {
     public DataManager () { };
     
     /**
-     * ç”¨æˆ·æ³¨å†Œ
+     * ×¢²á
      * @return       boolean
-     * @param        name å¾…æ£€ç”¨æˆ·å
-     * @param        email æ³¨å†Œé‚®ç®±
-     * @param        password å¯†ç 
+     * @param        name ÓÃ»§Ãû
+     * @param        email ÓÃ»§ÓÊ¼ş
+     * @param        password ÓÃ»§ÃÜÂë
      */
     public boolean signUp(String name, String email, String password)
     {
@@ -27,7 +27,7 @@ public class DataManager {
     	user.setPassWord(password);
     	user.setE_mail(email);
     	UserDao userDao = new UserDao();
-    	if(userDao.getUserByName(user.getUserName())==null) {
+    	if(userDao.getUserByName(user.getUserName())==null) {//TODO£ºÕâ¸öµØ·½ÅĞ¶ÏÊÇ·ñÕıÈ·£¿
     		userDao.addUser(user);
     		return true;
     	}
@@ -38,10 +38,10 @@ public class DataManager {
 
 
     /**
-     * ç™»å½•ï¼Œæ£€æŸ¥ç”¨æˆ·åå’Œå¯†ç æ˜¯å¦åŒ¹é…ï¼ŒæˆåŠŸè¿”å›çœŸï¼Œå¦åˆ™è¿”å›å‡
+     * µÇÂ¼£€´ÓÊı¾İ¿âÀï²é¿´ÊÇ·ñÓĞ´ËÓÃ»§
      * @return       boolean
-     * @param        userName ç”¨æˆ·å
-     * @param        password å¯†ç 
+     * @param        userName ÓÃ»§Ãû
+     * @param        password ÓÃ»§ÃÜÂë
      */
     public boolean login(String userName, String password)
     {
@@ -56,27 +56,30 @@ public class DataManager {
 
 
     /**
-     * æ‹‰å–æŸç”¨æˆ·æœªæ¥å—çš„æ‰€æœ‰æ¶ˆæ¯ï¼Œè‹¥æœ‰æ¶ˆæ¯è¿”å›çœŸ,å¦åˆ™è¿”å›å‡
+     * À­È¡ÓÃ»§Î´½ÓÊÕµÄĞÅÏ¢£¬·Åµ½sourceUserNameListºÍcontentListÖĞ
      * @return       boolean
-     * @param        userName æŸ¥è¯¢çš„ç”¨æˆ·å
-     * @param        sourceUserNameList å‘é€æ¶ˆæ¯çš„ç”¨æˆ·æ•°ç»„
-     * @param        contentList æ¶ˆæ¯å†…å®¹çš„æ•°ç»„
+     * @param        userName ÇëÇóÀ­È¡Î´½ÓÊÜÏûÏ¢µÄÓÃ»§µÄÓÃ»§Ãû
+     * @param        sourceUserNameList µÃµ½µÄË­¸øËû·¢ËÍµÄÓÃ»§ÃûµÄList
+     * @param        contentList ÄÚÈİList£¬ÓëÉÏÃæµÄsourceUserÒ»Ò»¶ÔÓ¦
      */
     public boolean pullUserMessage(String userName,List<String> sourceUserNameList, List<String> contentList)
     {
-    	//TODO
+    	//TODO ÕâÀïµÄÂß¼­ÊÇ·ñÕıÈ·£¿
     	SendingMessageDao sendingMessageDao = new SendingMessageDao();
     	User user  = null;
     	UserDao userDao =new UserDao();
     	user=userDao.getUserByName(userName);
     	
-    	if(sendingMessageDao.listAllMessageOfSentUser(user)!=null) {
-    		List<Message> list=sendingMessageDao.listAllMessageOfSentUser(user);
+    	if(sendingMessageDao.listAllMessageOfReceiveUser(user)!=null) {
+    		List<Message> list=sendingMessageDao.listAllMessageOfReceiveUser(user);
+    		
     		for(int i=0;i<list.size();i++) {
     			Message message=list.get(i);
     			sourceUserNameList.set(i, message.getSentUser());
     			contentList.set(i, message.getDate()+message.getContent());
     		}
+    		
+    		sendingMessageDao.deleteMessageByUser(userName);
     		
     		return true;
     	}
@@ -87,10 +90,10 @@ public class DataManager {
 
 
     /**
-     * å°†æ¶ˆæ¯è®°å½•ä¸‹æ¥
-     * @param        sourceUserName å‘å‡ºæ¶ˆæ¯ç”¨æˆ·
-     * @param        destUserName ç›®æ ‡ç”¨æˆ·
-     * @param        content æ¶ˆæ¯å†…å®¹ï¼ŒåŒ…å«ä¸€ä¸ªæ—¶é—´å‰ç¼€
+     * Êı¾İ¿â·½ÃæµÄsendText¯è½«Ã¿´Î·¢ËÍµÄÏûÏ¢´æµ½Êı¾İ¿âÖĞ×÷ÎªÏûÏ¢¼ÇÂ¼
+     * @param        sourceUserName ·¢ËÍÏûÏ¢µÄÓÃ»§
+     * @param        destUserName ½ÓÊÕÏûÏ¢µÄÓÃ»§
+     * @param        content ÏûÏ¢ÄÚÈİ
      */
     public void sendText(String sourceUserName, String destUserName, String content)
     {
@@ -106,13 +109,13 @@ public class DataManager {
 
 
     /**
-     * æŒ‰ç…§å…³é”®å­—æŸ¥è¯¢ç”¨æˆ·
-     * @param        keyword æŸ¥è¯¢ç›®æ ‡å…³é”®å­—
-     * @param        userNameList æŸ¥è¯¢ç»“æœçš„æ•°ç»„
+     * Í¨¹ı¹Ø¼ü×ÖÀ´²éÕÒÓÃ»§
+     * @return        List<User> ºÍÕâ¸ö¹Ø¼ü×ÖÏà¹ØµÄÓÃ»§List
+     * @param        keyword ¹Ø¼ü×Ö
      */
     public List<User> queryUser(String keyword)
     {
-    	//TODO
+    	
     	UserDao userDao = new UserDao(); 
     	List<User> list = new ArrayList<User>();
     	int length = userDao.getAllUser().size();
@@ -129,18 +132,18 @@ public class DataManager {
 
 
     /**
-     * ä¿®æ”¹ç”¨æˆ·ä¹‹é—´çš„å¥½å‹å…³ç³»
-     * @param        user1 ç”¨æˆ·ç”²
-     * @param        user2 ç”¨æˆ·ä¹™
-     * @param        isFriend æ–°çš„å¥½å‹å…³ç³»ï¼šæ˜¯å¦æ˜¯å¥½å‹
+     * ¸Ä±äºÃÓÑµÄ¹ØÏµ£¬Êµ¼ÊÊÇÔÚÊı¾İ¿âÖĞÉ¾³ı»òÌí¼ÓÏàÓ¦µÄ¼ÇÂ¼
+     * @param        user1 ÓÃ»§¼×
+     * @param        user2 ÓÃ»§ÒÒ
+     * @param        isFriend ÊÇ·ñÊÇºÃÓÑ
      */
     public void changeUserRelation(String user1, String user2, boolean isFriend)
     {
     	FriendDao friendDao = new FriendDao();
     	Friend friend = new Friend();
     	User user = new User();
-    	friend.setName(user2);
-    	user.setUserName(user2);
+    	friend.setName(user2);//user2ÊÇºÃÓÑ
+    	user.setUserName(user1);//user1ÊÇ±»Ìí¼Ó»òÉ¾³ıºÃÓÑµÄÓÃ»§
     	if(isFriend) {
     		friendDao.addFriendToUser(friend, user);
     	}
@@ -151,9 +154,9 @@ public class DataManager {
 
 
     /**
-     * æŸ¥æ‰¾è¯¥ç”¨æˆ·çš„æ‰€æœ‰å¥½å‹åå•
-     * @param        userName ç›®æ ‡ç”¨æˆ·å
-     * @param        friendList æŸ¥è¯¢çš„ç»“æœï¼Œä¸€ä¸ªå¥½å‹åå•çš„æ•°ç»„
+     * Í¨¹ıÓÃ»§Ãû²éÕÒÕâ¸öÓÃ»§µÄËùÓĞºÃÓÑ
+     * @param        userName ±»À­È¡ºÃÓÑµÄÓÃ»§Ãû
+     * @return       List<Friend> ·µ»ØÕâ¸öÓÃ»§µÄËùÓĞºÃÓÑ£¬·ÅÔÚListÖĞ 
      */
     public List<Friend> queryFriendList(String userName)
     {
