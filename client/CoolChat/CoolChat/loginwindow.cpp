@@ -17,6 +17,11 @@
 #include <QGraphicsOpacityEffect>
 
 
+//中文乱码处理
+#if _MSC_VER >= 1600
+#pragma execution_character_set("utf-8")
+#endif
+
 LoginWindow::LoginWindow(QWidget *parent)
     :QWidget(parent)
 {

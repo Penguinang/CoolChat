@@ -167,18 +167,9 @@ void ChatWindow::sentBtnOnClicked()
         QTimer::singleShot(2900,this,SLOT(hideFailureTips_3()));
         return;
     }
-    callback(true);
-    //msgInEdit = msgEditWindow->toPlainText();
-    //std::string s_msgInEdit = msgInEdit.toStdString();
-    //std::string s_chatId = this->chatID.toStdString();
-
-    //调用服务器功能，向好友发送文字信息
-    //void (ChatWindow::*pCallback)(bool,std::string)= &ChatWindow::callback;
-    //m_server->SendText(s_chatId,s_msgInEdit,pCallback);
-
-    //假设失败，显示消息发送失败提醒框
-    //this->hideFailureTips();
-    //callback(false);
+    void (ChatWindow::*pCallback)(bool)= &ChatWindow::callback;
+    //服务器发送消息
+    //m_server->SendText(this->chatID.toStdString(),msgEditWindow->toPlainText().toStdString(),pCallback);
 }
 
 void ChatWindow::callback(bool success)
@@ -210,7 +201,7 @@ void ChatWindow::showFailureTips(QString tipMsg)
     QFont *font=new QFont("Microsoft YaHei",12,0);
     tips->setFont(*font);
     tips->setText(tipMsg);
-    tips->setStyleSheet("QLabel{background-color:rgb(107,107,107);color:white;border-radius:10px;padding:2px 4px;}");
+    tips->setStyleSheet("QLabel{background-color:red;color:white;border-radius:10px;padding:2px 4px;}");
     tips->adjustSize();
     tips->move((this->width()-tips->width())/2,(this->height()-tips->height())/2);
     tips->show();
@@ -246,13 +237,14 @@ void ChatWindow::hideFailureTips_3()
 
 void ChatWindow::sendMsgShow(QString msg, QString head)
 {
+
     //将换行转换成<br>,否则html仅显示为空格
     msg.replace("\n","<br>");
     QString html = QString("<div class='msg-wrap right'><img class='header' src='qrc:/new/img/img/FaceQ.jpg' ><div class='msg'>%1<span class='trigon'></span></div></div>").arg(msg);
     m_html.append(html);
     msgShowWindow->setHtml(m_html+"</div>");
     msgShowWindow->show();
-    //recvMsgShow(msg,NULL);
+
 }
 
 void ChatWindow::recvMsgShow(QString msg, QString head)

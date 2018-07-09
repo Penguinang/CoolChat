@@ -29,14 +29,16 @@ SOURCES += \
     addfriend.cpp \
     loginwindow.cpp \
     registerwindow.cpp \
-    chatwindow.cpp
+    chatwindow.cpp \
+    applicationwindow.cpp
 
 HEADERS += \
         mainwindow.h \
     addfriend.h \
     loginwindow.h \
     registerwindow.h \
-    chatwindow.h
+    chatwindow.h \
+    applicationwindow.h
 
 FORMS += \
         mainwindow.ui

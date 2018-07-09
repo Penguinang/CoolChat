@@ -79,18 +79,18 @@ RegisterWindow::RegisterWindow(QWidget *parent) : QWidget(parent)
     confirmEdit = new QLineEdit;
     emailEdit = new QLineEdit;
 
-    usernameEdit->setFont(QFont("Microsoft YaHei",14,0));
+    usernameEdit->setFont(QFont("Microsoft YaHei",10,0));
     usernameEdit->setFixedWidth(250);
     usernameEdit->setPlaceholderText(tr("用户名由1-10个字符组成"));
-    passwordEdit->setFont(QFont("Microsoft YaHei",14,0));
+    passwordEdit->setFont(QFont("Microsoft YaHei",10,0));
     passwordEdit->setFixedWidth(250);
     passwordEdit->setEchoMode(QLineEdit::Password);
     passwordEdit->setPlaceholderText(tr("密码由6-16位数字和字母组成"));
-    confirmEdit->setFont(QFont("Microsoft YaHei",14,0));
+    confirmEdit->setFont(QFont("Microsoft YaHei",10,0));
     confirmEdit->setFixedWidth(250);
     confirmEdit->setEchoMode(QLineEdit::Password);
     confirmEdit->setPlaceholderText(tr("请再次输入密码"));
-    emailEdit->setFont(QFont("Microsoft YaHei",14,0));
+    emailEdit->setFont(QFont("Microsoft YaHei",10,0));
     emailEdit->setFixedWidth(250);
     emailEdit->setPlaceholderText(tr("请输入正确的邮箱"));
 
