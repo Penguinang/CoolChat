@@ -17,8 +17,7 @@
 #include <QWebEngineView>
 #include <QSizePolicy>
 #include <QKeyEvent>
-
-//#include "Server.h"
+#include "Server.h"
 
 /*
  * 聊天窗口Constructor
@@ -33,9 +32,10 @@
 #pragma execution_character_set("utf-8")
 #endif
 
-ChatWindow::ChatWindow(QWidget *parent,QString chatID,int chatHeight,int chatWidth)
+ChatWindow::ChatWindow(QWidget *parent,QString chatID,int chatHeight,int chatWidth,Server* server)
     :QWidget(parent)
 {
+    this->m_server = server;
     this->chatID = chatID;
     this->setWindowFlags(Qt::FramelessWindowHint| Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint);
     this->setAttribute(Qt::WA_TranslucentBackground);
@@ -155,8 +155,6 @@ void ChatWindow::paintEvent(QPaintEvent *event)
 
 void ChatWindow::sentBtnOnClicked()
 {
-    //如果消息为空，跳出提示"Massage can't be empty!"
-    //考虑将消息提示封装为一个类
     if(msgEditWindow->toPlainText()==NULL&&m_tips == false)
     {
         m_tips = true;
@@ -167,9 +165,10 @@ void ChatWindow::sentBtnOnClicked()
         QTimer::singleShot(2900,this,SLOT(hideFailureTips_3()));
         return;
     }
-    void (ChatWindow::*pCallback)(bool)= &ChatWindow::callback;
-    //服务器发送消息
-    //m_server->SendText(this->chatID.toStdString(),msgEditWindow->toPlainText().toStdString(),pCallback);
+    ChatWindow c;
+    auto callback=std::bind(&ChatWindow::callback,c,placeholders::_1);
+    //发送消息
+    m_server->SendText(this->chatID.toStdString(),msgEditWindow->toPlainText().toStdString(),callback);
 }
 
 void ChatWindow::callback(bool success)
@@ -192,7 +191,7 @@ void ChatWindow::callback(bool success)
     }
 }
 
-//提示 消息发送失败
+//提示消息发送失败
 void ChatWindow::showFailureTips(QString tipMsg)
 {
     tips = new QLabel(this);
@@ -264,7 +263,7 @@ bool ChatWindow::eventFilter(QObject *obj, QEvent *e)
         QKeyEvent *event = static_cast<QKeyEvent*>(e);
         if (event->key() == Qt::Key_Return && (event->modifiers() & Qt::ControlModifier))
         {
-            sentBtnOnClicked();//发送消息的槽
+            sentBtnOnClicked();
             return true;
         }
     }

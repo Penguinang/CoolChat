@@ -9,7 +9,8 @@
 #include <QPaintEvent>
 #include <QPoint>
 #include <QWebEngineView>
-//#include "Server.h"
+#include <server.h>
+
 
 namespace Ui {
 class ChatWindow;
@@ -20,7 +21,7 @@ class ChatWindow : public QWidget
     Q_OBJECT
 
 public:
-    ChatWindow(QWidget *parent = 0,QString chatID = "Anon",int chatHeight=800,int chatWidth=800);
+    ChatWindow(QWidget *parent = 0,QString chatID = "Anon",int chatHeight=800,int chatWidth=800,Server *server = 0);
     ~ChatWindow();
 
 private:
@@ -38,6 +39,7 @@ private:
     QString m_head;
     QString f_head;
     QString m_html;
+    Server *m_server;
 
     void paintEvent(QPaintEvent *);
     void callback(bool);
@@ -47,10 +49,6 @@ private:
 
 protected:
     bool eventFilter(QObject *,QEvent *);
-
-
-    //服务类对象
-    //Server *m_server;
 
 private slots:
     void windowclosed();

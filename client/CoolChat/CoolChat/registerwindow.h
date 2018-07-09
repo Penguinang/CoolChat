@@ -6,12 +6,13 @@
 #include <QMouseEvent>
 #include <QLineEdit>
 #include <QLabel>
+//#include <server.h>
 
 class RegisterWindow : public QWidget
 {
     Q_OBJECT
 public:
-    explicit RegisterWindow(QWidget *parent = 0);
+    explicit RegisterWindow(QWidget *parent = 0,Server *server);
     ~RegisterWindow();
 
     void mouseMoveEvent(QMouseEvent *event);
@@ -36,7 +37,7 @@ private slots:
     void hideTips_3();
 
 private:
-
+    Server m_server;
     QPushButton *registerBtn;
     QPushButton *exit;
     QPushButton *min;
@@ -52,7 +53,6 @@ private:
     QString r_email;
     QLabel* tips;//提示消息
     bool m_tips;//提示消息是否出现
-
     void paintEvent(QPaintEvent *);
     void showTips(QString);
 

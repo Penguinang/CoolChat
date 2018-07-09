@@ -11,6 +11,10 @@
 #include <QString>
 #include <QStackedWidget>
 #include <QPainter>
+#include <QString>
+#include <server.h>
+
+using namespace std;
 
 namespace Ui {
 class MainWindow;
@@ -21,8 +25,9 @@ class MainWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = 0,Server *server);
     ~MainWindow();
+
 private:
     void chat();
     AddFriend *addWindow;
@@ -31,12 +36,16 @@ private:
     //好友列表框
     void paintEvent(QPaintEvent*);
     QPainter *paint;
+    //好友列表
+    QPushButton *button[];
+    Server *m_server;
 
+protected:
+    void callback();
+    void ShowChatWindow(string string = "Anon",int index = 0);
 private slots:
     void AnotherWindow();
-    void ShowChatWindow_1();
-    void ShowChatWindow_2();
-
+    void buttonOnClicked();
 };
 
 #endif // MAINWINDOW_H

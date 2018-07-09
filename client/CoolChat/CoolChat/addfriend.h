@@ -13,7 +13,7 @@
 #include "string.h"
 #include "string"
 #include <string>
-//#include "Server.h"
+#include <server.h>
 
 using namespace std ;
 
@@ -21,9 +21,10 @@ class AddFriend:public QWidget
 {
     Q_OBJECT
 public:
-    explicit AddFriend(QWidget *parent=0);
+    explicit AddFriend(QWidget *parent=0,Server *server);
     ~AddFriend();
 private:
+    Server *m_server;
     QGridLayout *pLayout;
     QWidget* pWidget;
     QLineEdit *input;
@@ -31,7 +32,6 @@ private:
     QPushButton* exit;//退出按钮
     string str[5];
     void paintEvent(QPaintEvent *);
-    //Server *m_server;
     void callback();
 
 signals:

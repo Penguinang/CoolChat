@@ -9,7 +9,8 @@
 #include <QString>
 #include "registerwindow.h"
 #include <string>
-//#include "server.h"
+#include <server.h>
+
 
 namespace Ui {
 class LoginWindow;
@@ -20,7 +21,7 @@ class LoginWindow : public QWidget
     Q_OBJECT
 
 public:
-    LoginWindow(QWidget *parent=0);
+    LoginWindow(QWidget *parent=0,Server *server);
     ~LoginWindow();
 
     void mouseMoveEvent(QMouseEvent *event);
@@ -35,6 +36,8 @@ private:
     void callback(bool,std::string);
     bool checkUserName(QString);
     void showTips(QString);
+
+    Server *m_server;
 
     QLabel *userNameLabel;
     QLabel *passWordLabel;
@@ -52,7 +55,6 @@ private:
     QPoint mPntStart;
 
     RegisterWindow *registerWindow;
-    //Server *m_server;
 
     QString g_username;
     QString g_password;

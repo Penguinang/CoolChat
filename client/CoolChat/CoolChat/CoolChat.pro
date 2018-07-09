@@ -38,7 +38,8 @@ HEADERS += \
     loginwindow.h \
     registerwindow.h \
     chatwindow.h \
-    applicationwindow.h
+    applicationwindow.h \
+    server.h
 
 FORMS += \
         mainwindow.ui

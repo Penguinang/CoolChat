@@ -15,6 +15,8 @@
 #include <QString>
 #include <QDebug>
 #include <QGraphicsOpacityEffect>
+#include <functional>
+#include <iostream>
 
 
 //中文乱码处理
@@ -22,16 +24,22 @@
 #pragma execution_character_set("utf-8")
 #endif
 
-LoginWindow::LoginWindow(QWidget *parent)
+
+using namespace std;
+using namespace std::placeholders;
+
+//登录界面
+LoginWindow::LoginWindow(QWidget *parent,Server *server)
     :QWidget(parent)
 {
-    //m_server = new Server();   //实例化服务类
-
+    this->m_server = server;
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint);
     this->setAttribute(Qt::WA_TranslucentBackground);
 
     this->setMaximumSize(580,350);
     this->setMinimumSize(580,350);
+
+    m_tips = false;
 
     QLabel* titleLabel = new QLabel(QString("CoolChat"),this);
     QFont ft("Microsoft YaHei",30,63);
@@ -144,15 +152,15 @@ void LoginWindow::windowmin()
     this->showMinimized();
 }
 
-//登陆按钮slot函数
+//登录按钮slot函数
 void LoginWindow::slotLogin()
 {
     //初步判断用户输入格式，并通知服务器登录
-    if(getUserName()&&getPassWord()==true)
+    if((getUserName()==true )&& (getPassWord()==true))
     {
-    void (LoginWindow::*pCallback)(bool,std::string)= &LoginWindow::callback;
-    //TODO：通知服务器登录
-    //m_server->Login(g_username.toStdString(),g_password.toStdString(),pCallback);
+    LoginWindow l;
+    auto callback=std::bind(&LoginWindow::callback,l,placeholders::_1,placeholders::_2);
+    m_server->Login(g_username.toStdString(),g_password.toStdString(),callback);
     MainWindow* mainwin = new MainWindow();
     mainwin->show();
     this->close();
@@ -197,7 +205,7 @@ void LoginWindow::mouseReleaseEvent(QMouseEvent *event)
 bool LoginWindow::getUserName()
 {
     g_username = userNameLineEdit->text();
-    if(g_username == NULL && m_tips == false)
+    if(((g_username == "")||(g_username==NULL))&& (m_tips == false))
     {
         showTips(tr("用户名不能为空！"));
         return false;
@@ -214,7 +222,7 @@ bool LoginWindow::getUserName()
 bool LoginWindow::getPassWord()
 {
     g_password = passWordLineEdit->text();
-    if(g_password == NULL && m_tips == false)
+    if(((g_password == "" )||(g_password == NULL))&& (m_tips == false))
     {
         showTips(tr("密码不能为空！"));
         return false;

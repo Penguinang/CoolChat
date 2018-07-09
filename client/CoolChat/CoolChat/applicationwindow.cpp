@@ -5,16 +5,17 @@
 #include <QFont>
 #include <QPalette>
 #include <QPainter>
-//#include "Server.h"
+#include "server.h"
 
 //中文乱码处理
 #if _MSC_VER >= 1600
 #pragma execution_character_set("utf-8")
 #endif
 
-ApplicationWindow::ApplicationWindow(QWidget *parent,QString string):QWidget(parent)
+//好友申请界面
+ApplicationWindow::ApplicationWindow(QWidget *parent,QString string,Server *server):QWidget(parent)
 {
-    //m_server = new Server();
+    this->m_server = server;
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint);
     this->setAttribute(Qt::WA_TranslucentBackground);
     this->setMaximumSize(500,500);
@@ -44,7 +45,7 @@ ApplicationWindow::ApplicationWindow(QWidget *parent,QString string):QWidget(par
     sendBtn->setMinimumHeight(40);
     sendBtn->setMinimumWidth(100);
     sendBtn->move(350,430);
-    //connect(sendBtn,SIGNAL(clicked(bool)),this,SLOT(SearchFriend()));
+    connect(sendBtn,SIGNAL(clicked()),this,SLOT(sendBtnOnClicked());
 
     exit = new QPushButton(this);
     exit->setStyleSheet("QPushButton{border-image:url(:/new/img/img/exit.png);}"
@@ -92,4 +93,7 @@ void ApplicationWindow::windowmin()
 
 void ApplicationWindow::sendBtnOnClicked()
 {
+    //请求添加好友
+    m_server->RequestAddFriend(userId.toStdString(),application->toPlainText().toStdString(),NULL);
+    this->close();
 }

@@ -14,6 +14,7 @@
 #include <QTimer>
 #include <QByteArray>
 #include <QDebug>
+#include <server.h>
 
 //中文乱码处理
 #if _MSC_VER >= 1600
@@ -21,8 +22,10 @@
 #endif
 
 //注册界面
-RegisterWindow::RegisterWindow(QWidget *parent) : QWidget(parent)
+RegisterWindow::RegisterWindow(QWidget *parent,Server *server) : QWidget(parent)
 {
+    this->m_server = server;
+
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint);
     this->setAttribute(Qt::WA_TranslucentBackground);
     this->setMaximumSize(580,500);
@@ -171,11 +174,10 @@ void RegisterWindow::mouseReleaseEvent(QMouseEvent *event)
 
 void RegisterWindow::slotRegister()
 {
-    //获取用户输入的信息并进行前端初步检查
+    //通知服务器注册
     if(getUsername()&&getPassword()&&getConfirmpw()&&getEmail() == true)
     {
-    //TODO：通知服务器注册
-    //服务器需要检测重名并告知前端
+        m_server->SignUp(r_username,r_email,r_password);
     }
 }
 

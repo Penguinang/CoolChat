@@ -9,7 +9,7 @@
 #include <vector>
 #include <QGridLayout>
 #include "applicationwindow.h"
-//#include "Server.h"
+#include "server.h"
 
 //中文乱码处理
 #if _MSC_VER >= 1600
@@ -18,13 +18,11 @@
 
 using namespace std ;
 
-
-
-AddFriend::AddFriend(QWidget *parent): QWidget(parent)
+//查找好友界面
+AddFriend::AddFriend(QWidget *parent,Server *server): QWidget(parent)
 {
+    this->m_server = server;
 
-    //m_server = new Server();
-    setWindowTitle(tr("CoolChat"));
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint);
     this->setAttribute(Qt::WA_TranslucentBackground);
     this->setMaximumSize(550,400);
@@ -80,31 +78,37 @@ AddFriend::~AddFriend()
 
 void AddFriend::SearchFriend()
 {
-    void (AddFriend::*pCallback)(void)= &AddFriend::callback;
-    this->callback();
+    AddFriend a;
+    auto callback=std::bind(&AddFriend::callback,a,placeholders::_1);
     //向服务器查询用户列表
-    //m_server->QueryInformationByID(input->text().toStdString(),pCallback);
-    qDebug()<<"查找成功"<<input->text();
+    m_server->QueryInformationByID(input->text().toStdString(),callback);
 }
 
-void AddFriend::callback()
+void AddFriend::callback(vector<struct userinfo> &friends_list)
 {
-    string str1[2]={"1222","23"};
-    //QLabel* labelList[10];
     QPushButton* buttonList[10];
     for(int j=0;j<10;j++)
     {
         buttonList[j]=new QPushButton;
     }
-
-    for(int i=0;i<sizeof(str1)/sizeof(str1[0]);i++)
+    int size = friends_list.size();
+    if(size<=5)
     {
-        //labelList[i]->setPixmap(QPixmap(":/new/img/img/FaceQ.png"));
-        //labelList[i]->show();
-        //pLayout->addWidget(labelList[i],i,0);
-        buttonList[i]->setText(QString::fromStdString(str1[i]));
-        connect(buttonList[i],SIGNAL(clicked()),this,SLOT(BtnListOnClicked()));
-        pLayout->addWidget(buttonList[i],i,1);
+        for(int i=0;i<size;i++)
+        {
+            buttonList[i]->setText(QString::fromStdString(friends_list[i].ID));
+            connect(buttonList[i],SIGNAL(clicked()),this,SLOT(BtnListOnClicked()));
+            pLayout->addWidget(buttonList[i],i,1);
+        }
+    }
+    else
+    {
+        for(int i=0;i<size;i++)
+        {
+            buttonList[i]->setText(QString::fromStdString(friends_list.ID));
+            connect(buttonList[i],SIGNAL(clicked()),this,SLOT(BtnListOnClicked()));
+            pLayout->addWidget(buttonList[i],i,(int)(i/5));
+        }
     }
     pWidget->setMaximumSize(300,250);
     pWidget->setMinimumSize(300,250);
@@ -139,7 +143,7 @@ void AddFriend::windowmin()
 void AddFriend::BtnListOnClicked()
 {
     QPushButton* btn= qobject_cast<QPushButton*>(sender());
-    ApplicationWindow* aWindow = new ApplicationWindow(0,btn->text());
+    ApplicationWindow* aWindow = new ApplicationWindow(0,"请输入添加"+btn->text()+"为好友的理由：",this->m_server);
     aWindow->show();
 }
 

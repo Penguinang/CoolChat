@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "addfriend.h"
 #include "chatwindow.h"
+#include <server.h>
 #include <QPushButton>
 #include <QFont>
 #include <QListWidget>
@@ -14,51 +15,37 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QDebug>
+#include <QString>
+#include <string>
+#include <QMap>
 
 //中文乱码处理
 #if _MSC_VER >= 1600
 #pragma execution_character_set("utf-8")
 #endif
 
-MainWindow::MainWindow(QWidget *parent) :
+QMap<QString,int> m_map;
+
+using namespace std;
+
+
+//登录后主页面
+MainWindow::MainWindow(QWidget *parent,Server *server) :
     QWidget(parent)
 {
+    this->m_server = server;
+
+    setWindowTitle(tr("CoolChat"));
     this->setMaximumSize(780,500);
     this->setMinimumSize(780,500);
-
-    QPushButton *button;                        //"开始聊天吧！"按钮制作
-    button = new QPushButton(this);
-    button->setGeometry(QRect(400,160,200,80));
-    button->setText("开始聊天吧!");
+    QPushButton *buttonChat;                        //"开始聊天吧！"按钮制作
+    buttonChat = new QPushButton(this);
+    buttonChat->setGeometry(QRect(400,160,200,80));
+    buttonChat->setText("开始聊天吧!");
 
     QFont font("Microsoft YaHei",22,75);        //设置按钮字体大小并影藏按钮框
-    button->setFont(font);
-    button->setFlat(true);
-
-    QFont font1("Microsoft YaHei",15,50);
-    QPushButton *person;                        //列表顶端
-    person = new QPushButton(this);
-    person->setGeometry(QRect(0,0,220,80));
-    person->setText("小明");
-    person->setStyleSheet("background-color:white");
-    person->setFont(font1);
-
-    //小红
-    QPushButton *person1;
-    person1=new QPushButton(this);
-    person1->setGeometry(QRect(0,80,220,50));
-    person1->setText("小红");
-    person1->setStyleSheet("background-color:white");
-    person1->setFont(font1);
-    //qDebug()<<person1->text()<<endl;获取联系人姓名
-
-    //小强
-    QPushButton *person2;
-    person2=new QPushButton(this);
-    person2->setGeometry(QRect(0,130,220,50));
-    person2->setText("小强");
-    person2->setStyleSheet("background-color:white");
-    person2->setFont(font1);
+    buttonChat->setFont(font);
+    buttonChat->setFlat(true);
 
     //添加好友按钮图标制作
     QIcon add;
@@ -92,28 +79,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_cStackedWidget->move(220,0);
     m_cStackedWidget->hide();
 
-    /*手动添加聊天窗口仅测试，之后需要修改
-     *
-    *solution：
-    *从后台获取好友信息，建立QListWidget(https://blog.csdn.net/wcknxx/article/details/76497519?locationNum=9&fps=1)
-    *遍历后台传来的好友信息，添加好友Item到QListWidget
-    *并设置名称和ID（按顺序）的QMap映射
-    *并调用ChatWindow构造函数创建聊天页面添加到QStackedWidget中(按顺序编ID号的意义即在于此）
-    *
-    *当点击某个好友按钮时，获取该按钮（https://blog.csdn.net/anjicun/article/details/38846659）
-    *QPushButton->text()获取该好友名称
-    *通过QMap找到ID
-    *QStackedWidget->setCurrentWidget(ID)
-    *QStackedWidget->show()
-    */
-    ChatWindow* chat_1 = new ChatWindow(0,"小红",500,560);
-    ChatWindow* chat_2 = new ChatWindow(0,"小强",500,560);
+    callback();
 
-    m_cStackedWidget->addWidget(chat_1);
-    m_cStackedWidget->addWidget(chat_2);
-
-    connect(person1,SIGNAL(clicked()),this,SLOT(ShowChatWindow_1()));
-    connect(person2,SIGNAL(clicked()),this,SLOT(ShowChatWindow_2()));
 
 }
 
@@ -132,27 +99,50 @@ void MainWindow::AnotherWindow()
     addWindow->show();
 }
 
-void MainWindow::ShowChatWindow_1()
+void MainWindow::ShowChatWindow(string string,int index)
 {
-    m_cStackedWidget->show();
-    m_cStackedWidget->setCurrentIndex(0);
-}
-
-void MainWindow::ShowChatWindow_2()
-{
-    m_cStackedWidget->show();
-    m_cStackedWidget->setCurrentIndex(1);
+    m_cStackedWidget->setCurrentIndex(index);
+    chatWindow=new ChatWindow();
+    chatWindow->show();
 }
 
 void MainWindow::paintEvent(QPaintEvent*)
-//paintEvent函数由系统自动调用，用不着我们人为的去调用。
 {
     paint=new QPainter;
     paint->begin(this);
     paint->setPen(QPen(Qt::white,4,Qt::SolidLine));//设置画笔形式
     paint->setBrush(QBrush(Qt::white,Qt::SolidPattern));//设置画刷形式
-    paint->drawRect(0,0,220,500);
+    paint->drawRect(0,0,218,500);
     paint->end();
 
+
 }
+
+void MainWindow::buttonOnClicked()
+{
+    QPushButton* btn= qobject_cast<QPushButton*>(sender());
+    m_cStackedWidget->setCurrentIndex(m_map[btn->text()]);
+    m_cStackedWidget->show();
+}
+
+void MainWindow::callback(vector<struct userinfo> &friends_list)
+{
+    string friends[5]={"Bob","Tom","Jerry","Smith","Tim"};
+    ChatWindow* chatWindow[sizeof(friends)/sizeof(friends[0])];
+    QFont font1("Microsoft YaHei",15,50);
+    for(int i=0;i<sizeof(friends)/sizeof(friends[0]);i++)
+    {
+        button[i]=new QPushButton(this);
+        button[i]->setGeometry(0,0+50*i,220,50);
+        button[i]->setText(QString::fromStdString(friends[i]));
+        button[i]->setFont(font1);
+        button[i]->setStyleSheet("background-color:rgb(255,240,245)");
+        chatWindow[i]=new ChatWindow(0,QString::fromStdString(friends[i]),500,560);
+        m_cStackedWidget->addWidget(chatWindow[i]);
+        m_map.insert(QString::fromStdString(friends[i]),i);
+        connect(button[i],SIGNAL(clicked()),this,SLOT(buttonOnClicked()));
+    }
+}
+
+
 
