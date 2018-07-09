@@ -56,6 +56,19 @@ public class DataManager {
 
 
     /**
+     * 存放未接受的消息
+     * 
+     */
+    public void addReceivingMessage(String receiveUser,String sentUser,String content) {
+    	SendingMessageDao sendingMessageDao=new SendingMessageDao();
+    	Message message=new Message();
+    	message.setReceiveUser(receiveUser);
+    	message.setSentUser(sentUser);
+    	message.setContent(content);
+    	sendingMessageDao.addMessage(message);
+    }
+    
+    /**
      * 拉取用户未接收的信息，放到sourceUserNameList和contentList中
      * @return       boolean
      * @param        userName 请求拉取未接受消息的用户的用户名

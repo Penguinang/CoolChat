@@ -6,6 +6,9 @@ import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
 
 import CoolChat.Data.DataManager;
+import dao.SendingMessageDao;
+
+import enity.*;
 
 /**
  * Class TextMessage
@@ -21,13 +24,25 @@ public class TextMessage extends Message {
 
 	@Override
 	public Message getResult(HashMap<String, IoSession> sessions, IoSession session, DataManager dataManager) {
-		// TODO Auto-generated method stub
+		
+		IoSession aSession = sessions.get(userName);
+		if(aSession.containsAttribute("login")) {
+			TextMessage resultMessage=new TextMessage(session.getAttribute("userName").toString(),content);
+			session.write(resultMessage);
+		}
+		else {
+			//SendingMessageDao sMessageDao=new SendingMessageDao();
+			//SendingMessage sMessage=new SendingMessage();
+			//sMessageDao.addMessage();
+			dataManager.addReceivingMessage(userName,session.getAttribute("userName").toString(),content);
+		}
+		
 		return null;
 	}
 
 	@Override
 	public byte[] getProtocolEncodedBytes() {
-		//编号为6
+		//缂栧彿涓�6
 		byte messageType=6;
 		int userNameLength=this.userName.length();
 		byte[] userNameB=this.userName.getBytes();

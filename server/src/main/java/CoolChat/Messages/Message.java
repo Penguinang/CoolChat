@@ -15,31 +15,32 @@ abstract public class Message {
 	public Message () { };
 
     /**
-     * 返回对该消息的处理结果
-     * @param        sessions 已经登录的所有会话
-     * @param        session 当前用户的会话
-     * @param        dataManager 管理所有的数据
+     * 杩斿洖瀵硅娑堟伅鐨勫鐞嗙粨鏋�
+     * @param        sessions 宸茬粡鐧诲綍鐨勬墍鏈変細璇�
+     * @param        session 褰撳墠鐢ㄦ埛鐨勪細璇�
+     * @param        dataManager 绠＄悊鎵�鏈夌殑鏁版嵁
      */
     public abstract Message getResult(HashMap<String, IoSession> sessions, IoSession session,DataManager dataManager);
 
 
     /**
-     * 获得编码后的消息
+     * 鑾峰緱缂栫爜鍚庣殑娑堟伅
      */
     public abstract byte[] getProtocolEncodedBytes();
 
 
     /**
-     * 将字节数组解码为Message对象。
-     * @param        in 原始字节数组
+     * 灏嗗瓧鑺傛暟缁勮В鐮佷负Message瀵硅薄銆�
+     * @param        in 鍘熷瀛楄妭鏁扮粍
      */
     public static Message getDecodedMessage(IoBuffer input) throws Exception
     {
-    	//对消息进行解码
-    	//TODO：这个地方要仔细检查检查
+    	//瀵规秷鎭繘琛岃В鐮�
+    	//TODO锛氳繖涓湴鏂硅浠旂粏妫�鏌ユ鏌�
     	byte messageType = input.get();
     	
     	switch(messageType) {
+    	//把字符串最后的0去掉
     	case 0://SignUpMessage
     		int userNameLength=input.getInt();
      	    byte[] userName=new byte[userNameLength];
@@ -53,7 +54,8 @@ abstract public class Message {
     	    byte[] password=new byte[passwordLength];
     	    input.get(password);
     	    
-    	    return new SignUpMessage(new String(userName),new String(e_mail),new String(password));
+    	    
+    	    return new SignUpMessage(removeLastChar(new String(userName)),new String(e_mail).substring(0, e_mailLength-1),new String(password).substring(0, passwordLength-1));
     		
     	case 1://SignUpResult
     		return new SignUpResultMessage();
@@ -67,7 +69,7 @@ abstract public class Message {
     	    byte[] loginPassword=new byte[loginPasswordLength];
     	    input.get(loginPassword);
     	    
-    	    return new LoginMessage(new String(loginUserName),new String(loginPassword));
+    	    return new LoginMessage(removeLastChar( new String(loginUserName)),removeLastChar( new String(loginPassword)));
     	    
     	case 3://LoginResultMessage
     		int returnCode = input.getInt();
@@ -90,8 +92,8 @@ abstract public class Message {
         	    byte[] content=new byte[contentLength];
         	    input.get(content);
         	    
-        	    userNames[i]=new String(pullUserName);
-        	    contents[i]=new String(content);
+        	    userNames[i]=removeLastChar(new String(pullUserName));
+        	    contents[i]=removeLastChar(new String(content));
     		}
     		
     		return new PullResultMessage(messageNumber,userNames,contents);
@@ -105,14 +107,14 @@ abstract public class Message {
     	    byte[] textContent=new byte[textContentLength];
     	    input.get(textContent);
     	    
-    	    return new TextMessage(new String(textUserName),new String(textContent));
+    	    return new TextMessage(removeLastChar(new String(textUserName)),removeLastChar(new String(textContent)));
     	    
     	case 7://QueryUserInformantion
     		int keywordLength=input.getInt();
      	    byte[] keyword=new byte[keywordLength];
      	    input.get(keyword);
      	    
-     	    return new QueryUserInformationMessage(new String(keyword));
+     	    return new QueryUserInformationMessage(removeLastChar(new String(keyword)));
      	    
     	case 8://QueryUerResultMessage
     		int userNumber=input.getInt();
@@ -122,10 +124,11 @@ abstract public class Message {
     			int queryUserNameLength=input.getInt();
          	    byte[] queryUserName=new byte[queryUserNameLength];
          	    input.get(queryUserName);
-         	   queryUserNames[i]=new String(queryUserName);
+         	   queryUserNames[i]=removeLastChar(new String(queryUserName));
     		}
     		
     		return new QueryUserResultMessage(userNumber,queryUserNames);
+    		
     	case 9://requestFriendMessage
     		int targetUserNameLength=input.getInt();
      	    byte[] targetUserName=new byte[targetUserNameLength];
@@ -135,7 +138,7 @@ abstract public class Message {
     	    byte[] remark=new byte[remarkLength];
     	    input.get(remark);
     	    
-    	    return new RequestFriendMessage(new String(targetUserName),new String(remark));
+    	    return new RequestFriendMessage(removeLastChar(new String(targetUserName)),removeLastChar(new String(remark)));
     	    
     	case 10://sendRequestMessage
     		int sourceUserNameLength=input.getInt();
@@ -146,7 +149,7 @@ abstract public class Message {
     	    byte[] SendRequestRemark=new byte[SendRequestRemarkLength];
     	    input.get(SendRequestRemark);
     	    
-    	    return new SendRequestMessage(new String(sourceUserName),new String(SendRequestRemark));
+    	    return new SendRequestMessage(removeLastChar(new String(sourceUserName)),removeLastChar(new String(SendRequestRemark)));
     	    
     	case 11://ReplyPermissionMessage
     		byte rIsAgree=input.get();
@@ -159,7 +162,7 @@ abstract public class Message {
     	    byte[] ReplyPermissionyRemark=new byte[ReplyPermissionyRemarkLength];
     	    input.get(ReplyPermissionyRemark);
     	    
-    	    return new SendReplyMessage(rIsAgree,new String(ReplyPermissionTargetUserName),new String(ReplyPermissionyRemark));
+    	    return new SendReplyMessage(rIsAgree,removeLastChar(new String(ReplyPermissionTargetUserName)),removeLastChar(new String(ReplyPermissionyRemark)));
     		
     	case 12://SendReplyMessage
     		byte sIsAgree=input.get();
@@ -172,13 +175,13 @@ abstract public class Message {
     	    byte[] SendReplyRemark=new byte[SendReplyRemarkLength];
     	    input.get(SendReplyRemark);
     	    
-    	    return new SendReplyMessage(sIsAgree,new String(SendReplySourceUserName),new String(SendReplyRemark));
+    	    return new SendReplyMessage(sIsAgree,new String(SendReplySourceUserName),removeLastChar(new String(SendReplyRemark)));
     	    
     	case 13://DeleteFriendMessage
     	    int DUserNameLength=input.getInt();
     	    byte[] DUserName=new byte[DUserNameLength];
     	    input.get(DUserName);
-    	    return new DeleteFriendMessage(new String(DUserName));
+    	    return new DeleteFriendMessage(removeLastChar(new String(DUserName)));
     	    
     	case 14://QueryFreindListMessage
     		return new QueryFriendListMessage();
@@ -191,7 +194,7 @@ abstract public class Message {
     			int QueryFriendListResultUserNameLength=input.getInt();
          	    byte[] QueryFriendListResultUserName=new byte[QueryFriendListResultUserNameLength];
          	    input.get(QueryFriendListResultUserName);
-         	   QueryFriendListResultUserNames[i]=new String(QueryFriendListResultUserName);
+         	   QueryFriendListResultUserNames[i]=removeLastChar(new String(QueryFriendListResultUserName));
     		}
     		
     		return new QueryFriendListResultMessage(QuserNumber, QueryFriendListResultUserNames);
@@ -207,11 +210,15 @@ abstract public class Message {
 
 
     /**
-     * @param        rawBytes 原始字节数组
+     * @param        rawBytes 鍘熷瀛楄妭鏁扮粍
      */
     protected void internalGetDecodedMessage(byte[] rawBytes)
     {
     }
 
+    
+    public static String removeLastChar(String string) {
+    	return string.substring(0, string.length()-1);
+    }
 
 }

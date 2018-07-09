@@ -33,8 +33,10 @@ public class ServerHandler extends IoHandlerAdapter{
     public void messageReceived(IoSession session, Object message) throws Exception{
         Message result = ((Message)message).getResult(sessions, session, dbManager);
         if(result != null)
-        	
+        {
             session.write(result);
+        }
+        System.out.println("messageRecevied 中的getResult运行了，并把结果写进去了");
     }
 
     @Override

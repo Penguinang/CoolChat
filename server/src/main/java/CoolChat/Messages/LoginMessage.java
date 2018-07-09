@@ -23,11 +23,11 @@ public class LoginMessage extends Message {
 	@Override
 	public Message getResult(HashMap<String, IoSession> sessions, IoSession session, DataManager dataManager) {
 		if(!sessions.containsKey(userName)){
-			//如果sessions中没有这个用户了
+			//濡傛灉sessions涓病鏈夎繖涓敤鎴蜂簡
             sessions.put(userName, session);
         }
         if(!sessions.get(userName).containsAttribute("login") || sessions.get(userName).getAttribute("login") == new Boolean(false)){
-            //如果没登录
+            //濡傛灉娌＄櫥褰�
         	boolean success = dataManager.login(userName, password);
             if(success){
                 sessions.get(userName).setAttribute("login", new Boolean(true));
@@ -35,10 +35,10 @@ public class LoginMessage extends Message {
                 return new LoginResultMessage(0) ;    
             }
             else
-                return new LoginResultMessage(-1);//-1：用户名或密码错误
+                return new LoginResultMessage(-1);//-1锛氱敤鎴峰悕鎴栧瘑鐮侀敊璇�
         }
         else{
-            return new LoginResultMessage( -2);//-2：用户已登录
+            return new LoginResultMessage( -2);//-2锛氱敤鎴峰凡鐧诲綍
         }
 	}
 

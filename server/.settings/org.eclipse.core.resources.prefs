@@ -1,2 +1,8 @@
 eclipse.preferences.version=1
+encoding//src/main/java/CoolChat/Messages/LoginMessage.java=UTF-8
+encoding//src/main/java/CoolChat/Messages/Message.java=UTF-8
+encoding//src/main/java/CoolChat/Messages/SignUpMessage.java=UTF-8
+encoding//src/main/java/CoolChat/Messages/TextMessage.java=UTF-8
 encoding//src/main/java/CoolChat/Server/App.java=UTF-8
+encoding//src/main/java/dao/UserDao.java=UTF-8
+encoding//src/main/java/enity/User.java=UTF-8

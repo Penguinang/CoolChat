@@ -16,7 +16,7 @@ public class SignUpMessage extends Message {
 	private String password;
 	
 
-    public SignUpMessage (String userName,String password,String e_mail) {
+    public SignUpMessage (String userName,String e_mail,String password) {
     	this.userName=userName;
     	this.password=password;
     	this.e_mail=e_mail;
@@ -36,7 +36,7 @@ public class SignUpMessage extends Message {
 
 	@Override
 	public byte[] getProtocolEncodedBytes() {
-		// 编号为0
+		// 缂栧彿涓�0
 		byte messageType = 0;
 		int userNameLength=userName.length();
 		byte[] userNameB=userName.getBytes();
