@@ -10,6 +10,10 @@ using namespace std;
 
 
 namespace Netmodule{
+
+    struct userinfo{
+        string username;
+    };
 /* --------------------------------------------------------------------------------------------------
  *      Server
  * -------------------------------------------------------------------------------------------------- */  
@@ -49,8 +53,17 @@ namespace Netmodule{
          * Constructor
          * @param  ip 服务器ip
          * @param  port 端口
+         * @param  get_text_callback 接收到消息时使用的回调，time 格式为YYYY-MM-DD-hh-mm-ss
          */
-        Server (string ip = "localhost", int port = 9123);
+        Server (string ip, int port, void(*get_text_callback)(string username, string time, string content));
+
+        /**
+         * 以给定用户名密码注册
+         * @param  uID User ID
+         * @param  email 邮箱
+         * @param  password 密码
+         */
+        void SignUp (string uID, string email, string password);
 
 
         /**
@@ -78,13 +91,28 @@ namespace Netmodule{
 
         // XXX
         // 改了参数
+        // 2. 将没有用到的callback 删除了
         /**
          * 请求添加好友
          * @param  uID 目标用户ID
          * @param  callback 请求添加好友得到结果时的回调函数
          * @param  note 请求添加好友时候向对方的说明
          */
-        void RequestAddFriend (string uID, string note, void (*callback) (bool success, bool permission, string cause));
+        void RequestAddFriend (string uID, string note);
+
+        /**
+         * 回复用户添加好友的请求
+         * @param  uID 回复的用户ID
+         * @param  permission 是否同意
+         * @param  note 向用户的说明
+         */
+        void ReplyFriendRequest (string uID, bool permission, string note);
+
+        /**
+         * 删除好友
+         * @param  uID 删除的好友ID
+         */
+        void DeleteFriend (string uID);
 
 
         /**
@@ -136,12 +164,15 @@ namespace Netmodule{
 
         // Private attributes
         //  
+        string userID;
 
     public:
 
 
         // Private attribute accessor methods
         //  
+        string getUid();
+        void setUid(string _uid);
 
     private:
 

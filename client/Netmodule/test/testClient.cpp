@@ -11,75 +11,84 @@ using namespace Netmodule;
 
 
 #define LOG(fmt,...) ESystem::out->printfln(fmt, ##__VA_ARGS__)
-class MinaClientHandler : public EIoHandlerAdapter {
-public:
-	void exceptionCaught(sp<EIoSession>& session, EThrowableType* cause) THROWS(EException) {
-		LOG("exceptionCaught");
-		cause->getThrowable()->printStackTrace();
-		session->closeNow();
-	}
+char *username;
+char *password;
 
-	void messageReceived(sp<EIoSession>& session, const void* message)THROWS(EException) {
-		LOG("messageReceived");
-	}
+void testSignup(EIoSession *session){
+	sp<Message> msg = new SignupMessage(username, "1.com", password);
+	EIoBuffer *pb = msg->getEncodedMessage();
+	pb->flip();
+	session->write(pb)->awaitUninterruptibly();
+}
 
-	void messageSent(sp<EIoSession>& session, const void* message) THROWS(EException) {
-		LOG("messageSent");
-	}
+void testLogin(EIoSession *session){
+	sp<Message> msg = new LoginMessage(username, password);
+	EIoBuffer *pb = msg->getEncodedMessage();
+	pb->flip();
+	session->write(pb)->awaitUninterruptibly();
+}
 
-	void sessionClosed(sp<EIoSession>& session) THROWS(EException) {
-		LOG("sessionClosed");
-	}
+void testPullMessage(EIoSession *session){
+	testLogin(session);
 
-	void sessionCreated(sp<EIoSession>& session) THROWS(EException) {
-		LOG("sessionCreated");
-		session->getConfig()->setIdleTime(EIdleStatus::BOTH_IDLE, 1);
-	}
+	sp<Message> msg = new PullMessage();
+	EIoBuffer *pb = msg->getEncodedMessage();
+	pb->flip();
+	session->write(pb)->awaitUninterruptibly();
+}
 
-	void sessionIdle(sp<EIoSession>& session, EIdleStatus status) THROWS(EException) {
-		LOG("sessionIdle");
-	}
+void testText(EIoSession *session){
+	testLogin(session);
 
-	void sessionOpened(sp<EIoSession>& session) THROWS(EException) {
-		LOG("sessionOpened");
-	}
+	sp<Message> msg = new TextMessage(username, "Hello");
+	EIoBuffer *pb = msg->getEncodedMessage();
+	pb->flip();
+	session->write(pb)->awaitUninterruptibly();
+}
 
-	 void inputClosed(sp<EIoSession>& session) THROWS(EException) {
-		LOG("inputClosed");
-		session->closeNow();
-	}
-};
+void testQueryUserInformation(EIoSession *session){
+	testLogin(session);
 
-void defaultTestConnector(){
-    EIoConnector *connector = new ENioSocketConnector();
-    MinaClientHandler *handler = new MinaClientHandler();
-    connector->setConnectTimeoutMillis(30000L);
-    connector->setHandler(handler);
-    sp<EIoSession> session = null;
+	sp<Message> msg = new QueryUserInformationMessage("keyword");
+	EIoBuffer *pb = msg->getEncodedMessage();
+	pb->flip();
+	session->write(pb)->awaitUninterruptibly();
+}
 
-    try{
-        EInetSocketAddress addr("localhost", 9123);
-        sp<EConnectFuture> future = connector->connect(&addr);
-        future->awaitUninterruptibly();
-        session = future->getSession();
+void testRequestFriend(EIoSession *session){
+	testLogin(session);
 
-        EIoBuffer *ib = EIoBuffer::allocate(1024);
-        ib->buf()->put("Hello\n\n\n\n", 11);
-        ib->flip();
-        session->write(ib);
-    }
-    catch(EException e){
-        LOG("Get a exception");
-        e.printStackTrace();
-    }
+	sp<Message> msg = new RequestFriendMessage(username, "This mike");
+	EIoBuffer *pb = msg->getEncodedMessage();
+	pb->flip();
+	session->write(pb)->awaitUninterruptibly();
+}
 
-    if(session != null){
-        session->getCloseFuture()->awaitUninterruptibly();
-    }
-    connector->dispose();
+void testDeleteFriend(EIoSession *session){
+	testLogin(session);
 
-    delete connector;
-    delete handler;
+	sp<Message> msg = new DeleteFriendMessage("Tracy");
+	EIoBuffer *pb = msg->getEncodedMessage();
+	pb->flip();
+	session->write(pb)->awaitUninterruptibly();	
+}
+
+void testQueryFriend(EIoSession *session){
+	testLogin(session);
+
+	sp<Message> msg = new QueryFriendListMessage();
+	EIoBuffer *pb = msg->getEncodedMessage();
+	pb->flip();
+	session->write(pb)->awaitUninterruptibly();		
+}
+
+void testLogout(EIoSession *session){
+	testLogin(session);
+
+	sp<Message> msg = new LogOutMessage();
+	EIoBuffer *pb = msg->getEncodedMessage();
+	pb->flip();
+	session->write(pb)->awaitUninterruptibly();		
 }
 
 void testClient(){
@@ -87,24 +96,23 @@ void testClient(){
 	ServerHandler *handler = new ServerHandler();
 	connector->setConnectTimeoutMillis(30000L);
 	connector->setHandler(handler);
-	// MessageCodecFactory *codecFactory = new MessageCodecFactory();
-	// EProtocolCodecFilter *filter = new EProtocolCodecFilter(codecFactory);
-	// Bug of CxxMina, cant use protocolcodecfilter, so just write EIoBuffer
-	// connector->getFilterChain()->addLast("protocol", filter);
 	sp<EIoSession> session = null;
 
 	try{
-		EInetSocketAddress addr("localhost", 9123);
+		EInetSocketAddress addr("172.16.136.7", 9123);
 		sp<EConnectFuture> future = connector->connect(&addr);
 		future->awaitUninterruptibly();
 		session = future->getSession();
 		LOG("Start client");
-
-		sp<TextMessage> msg = new TextMessage("Client", "Hello Server");
-		EIoBuffer *pb = msg->getEncodedMessage();
-		pb->flip();
-		session->write(pb);
-
+		
+		// testSignup(session.dismiss());
+		// testText(session.dismiss());
+		// testPullMessage(session.dismiss());
+		// testDeleteFriend(session.dismiss());
+		// testQueryFriend(session.dismiss());
+		// testQueryUserInformation(session.dismiss());
+		testRequestFriend(session.dismiss());
+		// testLogout(session.dismiss());
 		EThread::sleep(100000);
 	}
 	catch(EException e){
@@ -119,6 +127,12 @@ void testClient(){
 	// delete filter;
 }
 
-int main(){
+int main(int argc, char **argv){
+	if(argc < 3){
+		printf("./testClient [username] [password]");
+		return -1;
+	}
+	username = argv[1];
+	password = argv[2];
 	testClient();
 }

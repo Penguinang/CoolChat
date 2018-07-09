@@ -5,7 +5,9 @@
 #include <vector>
 using namespace std;
 
+#include "Server.h"
 #include "Eio.hh"
+
 namespace Netmodule{
 
 /* --------------------------------------------------------------------------------------------------
@@ -113,6 +115,9 @@ namespace Netmodule{
  *      6. TextMessage
  * -------------------------------------------------------------------------------------------------- */  
     class TextMessage : public Message{
+    public:
+        typedef void(*GetTextCallBack)(string username, string time, string content);
+        static GetTextCallBack resultCallBack;
     private:
         static unsigned int type_num;
         EString username;
@@ -124,6 +129,7 @@ namespace Netmodule{
         TextMessage(EString _username, EString _content);
 
         EIoBuffer *getEncodedMessage();
+        void processMessage();
         EString toString();
     };
 /* --------------------------------------------------------------------------------------------------
@@ -158,6 +164,7 @@ namespace Netmodule{
         QueryUserResultMessage(EA<EString> _userList);
 
         EIoBuffer *getEncodedMessage();
+        void processMessage();
         EString toString();
     };
 /* --------------------------------------------------------------------------------------------------
@@ -165,8 +172,8 @@ namespace Netmodule{
  * -------------------------------------------------------------------------------------------------- */  
     class RequestFriendMessage : public Message{
     public:
-        typedef void (*RequestFriendCallBack) (bool success, bool permission, string cause);
-        static RequestFriendCallBack resultCallBack;
+        // typedef void (*RequestFriendCallBack) (bool success, bool permission, string cause);
+        // static RequestFriendCallBack resultCallBack;
     private:
         static unsigned int type_num;
         EString username;
@@ -231,6 +238,7 @@ namespace Netmodule{
         SendReplyMessage(boolean _success, EString _username, EString _note);
 
         EIoBuffer *getEncodedMessage();
+        void processMessage();
         EString toString();
     };
 /* --------------------------------------------------------------------------------------------------
@@ -281,6 +289,7 @@ namespace Netmodule{
         QueryFriendListResultMessage(EA<EString> _friendList);
 
         EIoBuffer *getEncodedMessage();
+        void processMessage();
         EString toString();
     };
 /* --------------------------------------------------------------------------------------------------

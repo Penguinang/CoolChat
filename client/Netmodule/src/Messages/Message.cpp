@@ -13,7 +13,7 @@ namespace Netmodule{
     *      Message base
     * -------------------------------------------------------------------------------------------------- */    
     Message* Message::decodeBytesToMessage(EIoBuffer *input) THROWS(EException){
-        switch(input->get(0)){
+        switch(input->get()){
             case 0: return SignupMessage::decodeBytes(input);
             case 1: DEBUG("Get Umimplemented SignupResultMessage");return nullptr;
             case 2: return LoginMessage::decodeBytes(input);
@@ -135,18 +135,23 @@ namespace Netmodule{
         string extra = "";
         if(!success){
             switch(retcode){
-                case 1:
-                case 2:
+                case -1: extra = "Wrong user name or password"; break;
+                case -2: extra = "Already Login"; break;
                 default:
                     extra = "Login Fail For Unknown Reason";
             }
         }
-        LoginMessage::resultCallBack(success, extra);
+        if(LoginMessage::resultCallBack){
+            LoginMessage::resultCallBack(success, extra);    
+        }
+        else{
+            DEBUG("Get a nullptr LoginResult callback\n");
+        }
         LoginMessage::resultCallBack = nullptr;
     }
 
     EString LoginResultMessage::toString(){
-        return EString("LoginResultMessgae");
+        return EString("LoginResultMessgae\nResultCode: "+retcode);
     }
     /* --------------------------------------------------------------------------------------------------
      *      4. PullMessage
@@ -200,6 +205,10 @@ namespace Netmodule{
         DEBUG("PullResultMessage encode hasnot been implemented\n");
     }
 
+    // void processMessage(){
+
+    // }
+
     EString PullResultMessage::toString(){
         return EString("PullResultMessgae");
     }
@@ -207,6 +216,7 @@ namespace Netmodule{
      *      6. TextMessage
      * -------------------------------------------------------------------------------------------------- */  
     unsigned int TextMessage::type_num = 6;
+    TextMessage::GetTextCallBack TextMessage::resultCallBack = nullptr;
     
     TextMessage* TextMessage::decodeBytes(EIoBuffer *input){
         int nameLength = input->getInt();
@@ -231,6 +241,17 @@ namespace Netmodule{
         ret->putInt(contentLength+1);
         ret->putString(content.c_str(),contentLength);
         return ret;
+    }
+
+    void TextMessage::processMessage(){
+        string _time = content.substring(0, 20).c_str();
+        if(resultCallBack){
+            resultCallBack(username.c_str(), _time, content.c_str());
+        }
+        else{
+            DEBUG("Get a nullptr TextMessage callback function\n");
+        }
+        resultCallBack = nullptr;
     }
 
     EString TextMessage::toString(){
@@ -286,6 +307,19 @@ namespace Netmodule{
         DEBUG("QueryUserResultMessage encode hasnot been implemented\n");
     }
 
+    void QueryUserResultMessage::processMessage(){
+        if(QueryUserInformationMessage::resultCallBack){
+            vector<struct userinfo> user_info_list;
+            for(int i = 0; i<userList.length(); i++){
+                user_info_list.push_back({userList[i].c_str()});
+            }
+            QueryUserInformationMessage::resultCallBack(user_info_list);
+        }
+        else{
+            DEBUG("Get a nullptr QueryUserInformation callback\n");
+        }
+    }
+
     EString QueryUserResultMessage::toString(){
         return EString("QueryUserResultMessage");
     }
@@ -293,7 +327,7 @@ namespace Netmodule{
      *      9. RequestFriendMessage
      * -------------------------------------------------------------------------------------------------- */  
     unsigned int RequestFriendMessage::type_num = 9;
-    RequestFriendMessage::RequestFriendCallBack RequestFriendMessage::resultCallBack = nullptr;
+    // RequestFriendMessage::RequestFriendCallBack RequestFriendMessage::resultCallBack = nullptr;
 
     RequestFriendMessage* RequestFriendMessage::decodeBytes(EIoBuffer *input){
         DEBUG("RequestFriendMessage decode hasnot been implemented\n");
@@ -395,6 +429,10 @@ namespace Netmodule{
         DEBUG("SendReplyMessage encode hasnot been implemented\n");
     }
 
+    void SendReplyMessage::processMessage(){
+        TextMessage::resultCallBack("server friend reply", username.c_str, success ? "true" : "false");
+    }
+
     EString SendReplyMessage::toString(){
         return EString("SendReplyMessage");        
     }
@@ -469,6 +507,21 @@ namespace Netmodule{
 
     EIoBuffer* QueryFriendListResultMessage::getEncodedMessage(){
         DEBUG("QueryFriendListResult encode hasnot been implemented\n");
+    }
+
+    void QueryFriendListResultMessage::processMessage(){
+        vector<struct userinfo> friend_list;
+        for(int i = 0; i<friendList.length(); i++){
+            struct userinfo user_info = {string(friendList[i].c_str())};
+            friend_list.push_back(user_info);
+        }
+        if(QueryFriendListMessage::resultCallBack){
+            QueryFriendListMessage::resultCallBack(friend_list);
+        }
+        else{
+            DEBUG("Get a nullptr QueryFriendList callback\n");
+        }
+        QueryFriendListMessage::resultCallBack = nullptr;
     }
 
     EString QueryFriendListResultMessage::toString(){

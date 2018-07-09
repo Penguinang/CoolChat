@@ -18,7 +18,7 @@ namespace Netmodule{
         delete handler;
     }
 
-    Server::Server(string ip, int port){
+    Server::Server(string ip, int port, void(*get_text_callback)(string username, string time, string content)){
         connector = new ENioSocketConnector();
         handler = new ServerHandler();
         connector->setConnectTimeoutMillis(connect_timeout);
@@ -45,6 +45,7 @@ namespace Netmodule{
         session->write(msg_buffer);
         delete msg;
         LoginMessage::resultCallBack = callback;
+        setUid(uID);
     }
 
     /**
@@ -72,13 +73,30 @@ namespace Netmodule{
     /**
      * RequestFriendCallBack  -->  void (*) (bool success, bool permission, string cause)
      */
-    void Server::RequestAddFriend (string uID, string note, RequestFriendMessage::RequestFriendCallBack callback){
+    void Server::RequestAddFriend (string uID, string note){
         Message *msg = new RequestFriendMessage(EString(uID.c_str()), EString(note.c_str()));
         EIoBuffer *msg_buffer = msg->getEncodedMessage();
         session->write(msg_buffer);
         delete msg;
-        RequestFriendMessage::resultCallBack = callback;        
+        // XXX
+        // 根据商议， 决定将此回复忽略， 改用GetTextMessage的回调
+        // RequestFriendMessage::resultCallBack = callback;        
     }
+
+    void Server::ReplyFriendRequest (string uID, bool permission, string note){
+        Message *msg = new ReplyPermissionMessage(permission, uID, note);
+        EIoBuffer *msg_buffer = msg->getEncodedMessage();
+        session->write(msg_buffer);
+        delete msg;
+    }
+
+    void Server::DeleteFriend (string uID){
+        Message *msg = new DeleteFriendMessage(uID);
+        EIoBuffer *msg_buffer = msg->getEncodedMessage();
+        session->write(msg_buffer);
+        delete msg;
+    }
+    
 
     void Server::SendText (string uID, string content, void (*callback) (bool success)){
         Message *msg = new TextMessage(EString(uID.c_str()), EString(content.c_str()));
@@ -101,6 +119,14 @@ namespace Netmodule{
         EIoBuffer *msg_buffer = msg->getEncodedMessage();
         session->write(msg_buffer);
         delete msg;
+    }
+
+    string Server::getUid(){
+        return userID;
+    }
+
+    void Server::setUid(string _uid){
+        userID = _uid;
     }
     /* --------------------------------------------------------------------------------------------------
      *      ServerHandler
@@ -125,6 +151,7 @@ namespace Netmodule{
     void ServerHandler::messageReceived(sp<EIoSession>& session, sp<EObject>& message) THROWS(EException){
         EIoBuffer *buffer = dynamic_cast<EIoBuffer*>(message.dismiss());
         Message *msg = Message::decodeBytesToMessage(buffer);
+        msg->processMessage();
         if(msg != nullptr){
             printf("Receive message:\n%s", msg->toString().c_str());
             delete msg;
