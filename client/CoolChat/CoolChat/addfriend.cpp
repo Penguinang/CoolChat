@@ -71,9 +71,6 @@ AddFriend::AddFriend(QWidget *parent): QWidget(parent)
     connect(min,SIGNAL(clicked()),this,SLOT(windowmin()));
     pWidget = new QWidget(this);
     pLayout = new QGridLayout(pWidget);
-
-    pix = QPixmap(":/new/img/img/FaceQ.png");
-
 }
 
 AddFriend::~AddFriend()
@@ -83,31 +80,35 @@ AddFriend::~AddFriend()
 
 void AddFriend::SearchFriend()
 {
-    void (AddFriend::*pCallback)(std::vector<struct userinfo> &user_list)= &AddFriend::callback;
+    void (AddFriend::*pCallback)(void)= &AddFriend::callback;
+    this->callback();
     //向服务器查询用户列表
     //m_server->QueryInformationByID(input->text().toStdString(),pCallback);
     qDebug()<<"查找成功"<<input->text();
 }
 
-void AddFriend::callback(std::vector<struct userinfo> &user_list)
+void AddFriend::callback()
 {
-    delete pLayout;
-    delete pWidget;
-    pLayout = new QGridLayout(this);
-    QLabel* labelList[10];
+    string str1[2]={"1222","23"};
+    //QLabel* labelList[10];
     QPushButton* buttonList[10];
-    /*
-    for(int i=0;i<user_list.size();i++)
+    for(int j=0;j<10;j++)
     {
-        labelList[i]->setPixmap(pix);
-        pLayout->addWidget(labelList[i],i,0);
-        //buttonList[i]->setText(QString::fromStdString(user_list[i]));
+        buttonList[j]=new QPushButton;
+    }
+
+    for(int i=0;i<sizeof(str1)/sizeof(str1[0]);i++)
+    {
+        //labelList[i]->setPixmap(QPixmap(":/new/img/img/FaceQ.png"));
+        //labelList[i]->show();
+        //pLayout->addWidget(labelList[i],i,0);
+        buttonList[i]->setText(QString::fromStdString(str1[i]));
         connect(buttonList[i],SIGNAL(clicked()),this,SLOT(BtnListOnClicked()));
         pLayout->addWidget(buttonList[i],i,1);
     }
-    pWidget->setMaximumSize(500,250);
-    pWidget->setMinimumSize(500,250);
-    pWidget->move(0,150);*/
+    pWidget->setMaximumSize(300,250);
+    pWidget->setMinimumSize(300,250);
+    pWidget->move(100,150);
 }
 
 void AddFriend::paintEvent(QPaintEvent *event)

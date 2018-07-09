@@ -27,7 +27,7 @@ ApplicationWindow::ApplicationWindow(QWidget *parent,QString string):QWidget(par
 
     application=new QTextEdit(this);
     application->setFont(*font);
-    application->setPlaceholderText("申请理由…");
+    application->setPlaceholderText("申请理由…"+string);
     application->setFocus();
     application->setGeometry(QRect(50,100,400,300));
 
@@ -92,5 +92,4 @@ void ApplicationWindow::windowmin()
 
 void ApplicationWindow::sendBtnOnClicked()
 {
-
 }

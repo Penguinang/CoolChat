@@ -9,7 +9,7 @@ class ApplicationWindow: public QWidget
 {
     Q_OBJECT
 public:
-    ApplicationWindow(QWidget *parent=0,QString string);
+    ApplicationWindow(QWidget *parent=0,QString string = NULL);
 
 private:
     QTextEdit *application;

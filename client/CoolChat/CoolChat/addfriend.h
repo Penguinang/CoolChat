@@ -10,7 +10,12 @@
 #include <QGridLayout>
 #include <QPixmap>
 #include <QLabel>
+#include "string.h"
+#include "string"
+#include <string>
 //#include "Server.h"
+
+using namespace std ;
 
 class AddFriend:public QWidget
 {
@@ -24,10 +29,10 @@ private:
     QLineEdit *input;
     QPushButton* min;//最小化按钮
     QPushButton* exit;//退出按钮
-    QPixmap pix;
+    string str[5];
     void paintEvent(QPaintEvent *);
     //Server *m_server;
-    void callback(std::vector<struct userinfo> &user_list);
+    void callback();
 
 signals:
 public slots:
