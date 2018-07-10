@@ -23,8 +23,21 @@ public class RequestFriendMessage extends Message {
 	public Message getResult(HashMap<String, IoSession> sessions, IoSession session, DataManager dataManager) {
 		// 返回发送请求消息
 		String sourceUserName=session.getAttribute("userName").toString();
+		if(sessions.get(sourceUserName)==null) {
+			//查询数据库
+			if(dataManager.queryUser(targetUserName)==null) {
+				System.out.println("there is no user named " + targetUserName);
+			}
+			else {
+				//dataManager.addReceivingMessage(receiveUser, sentUser, content);
+				//存到数据库中
+			}
 		
-		return new SendRequestMessage(sourceUserName, this.remark);
+		}
+		else{
+			sessions.get(targetUserName).write(new SendRequestMessage(sourceUserName, this.remark));
+		}
+		return null;
 	}
 
 	@Override

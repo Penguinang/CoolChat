@@ -52,6 +52,10 @@ public class FriendDao {
 		   ps=conn.prepareStatement(sql);
 		   ps.setString(1, friend.getName());
 		   ps.setString(2,user.getUserName());
+		   
+		   ps.execute();
+		   ps.close();
+		   conn.close();
 	   }catch(SQLException e) {
 		  e.printStackTrace();
 	   }

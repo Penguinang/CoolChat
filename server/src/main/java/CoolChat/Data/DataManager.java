@@ -14,11 +14,11 @@ public class DataManager {
     public DataManager () { };
     
     /**
-     * ×¢²á
+     * ×¢ï¿½ï¿½
      * @return       boolean
-     * @param        name ÓÃ»§Ãû
-     * @param        email ÓÃ»§ÓÊ¼ş
-     * @param        password ÓÃ»§ÃÜÂë
+     * @param        name ï¿½Ã»ï¿½ï¿½ï¿½
+     * @param        email ï¿½Ã»ï¿½ï¿½Ê¼ï¿½
+     * @param        password ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
      */
     public boolean signUp(String name, String email, String password)
     {
@@ -27,7 +27,7 @@ public class DataManager {
     	user.setPassWord(password);
     	user.setE_mail(email);
     	UserDao userDao = new UserDao();
-    	if(userDao.getUserByName(user.getUserName())==null) {//TODO£ºÕâ¸öµØ·½ÅĞ¶ÏÊÇ·ñÕıÈ·£¿
+    	if(userDao.getUserByName(user.getUserName())==null) {//TODOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø·ï¿½ï¿½Ğ¶ï¿½ï¿½Ç·ï¿½ï¿½ï¿½È·ï¿½ï¿½
     		userDao.addUser(user);
     		return true;
     	}
@@ -38,15 +38,19 @@ public class DataManager {
 
 
     /**
-     * µÇÂ¼£€´ÓÊı¾İ¿âÀï²é¿´ÊÇ·ñÓĞ´ËÓÃ»§
+     * ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İ¿ï¿½ï¿½ï¿½é¿´ï¿½Ç·ï¿½ï¿½Ğ´ï¿½ï¿½Ã»ï¿½
      * @return       boolean
-     * @param        userName ÓÃ»§Ãû
-     * @param        password ÓÃ»§ÃÜÂë
+     * @param        userName ï¿½Ã»ï¿½ï¿½ï¿½
+     * @param        password ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
      */
     public boolean login(String userName, String password)
     {
     	UserDao userDao =new UserDao();
-    	if(userDao.getUserByName(userName).getPassWord().equals(password)) {
+    	if(userDao.getUserByName(userName)==null) {
+    		System.out.println("there no such user called "+ userName);
+    		return false;
+    	}
+    	else if(userDao.getUserByName(userName).getPassWord().equals(password)) {
     		return true;
     	}
     	else {
@@ -56,7 +60,7 @@ public class DataManager {
 
 
     /**
-     * ´æ·ÅÎ´½ÓÊÜµÄÏûÏ¢
+     * ï¿½ï¿½ï¿½Î´ï¿½ï¿½ï¿½Üµï¿½ï¿½ï¿½Ï¢
      * 
      */
     public void addReceivingMessage(String receiveUser,String sentUser,String content) {
@@ -69,15 +73,15 @@ public class DataManager {
     }
     
     /**
-     * À­È¡ÓÃ»§Î´½ÓÊÕµÄĞÅÏ¢£¬·Åµ½sourceUserNameListºÍcontentListÖĞ
+     * ï¿½ï¿½È¡ï¿½Ã»ï¿½Î´ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½Åµï¿½sourceUserNameListï¿½ï¿½contentListï¿½ï¿½
      * @return       boolean
-     * @param        userName ÇëÇóÀ­È¡Î´½ÓÊÜÏûÏ¢µÄÓÃ»§µÄÓÃ»§Ãû
-     * @param        sourceUserNameList µÃµ½µÄË­¸øËû·¢ËÍµÄÓÃ»§ÃûµÄList
-     * @param        contentList ÄÚÈİList£¬ÓëÉÏÃæµÄsourceUserÒ»Ò»¶ÔÓ¦
+     * @param        userName ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½
+     * @param        sourceUserNameList ï¿½Ãµï¿½ï¿½ï¿½Ë­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Íµï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½List
+     * @param        contentList ï¿½ï¿½ï¿½ï¿½Listï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½sourceUserÒ»Ò»ï¿½ï¿½Ó¦
      */
     public boolean pullUserMessage(String userName,List<String> sourceUserNameList, List<String> contentList)
     {
-    	//TODO ÕâÀïµÄÂß¼­ÊÇ·ñÕıÈ·£¿
+    	//TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½ï¿½Ç·ï¿½ï¿½ï¿½È·ï¿½ï¿½
     	SendingMessageDao sendingMessageDao = new SendingMessageDao();
     	User user  = null;
     	UserDao userDao =new UserDao();
@@ -88,8 +92,8 @@ public class DataManager {
     		
     		for(int i=0;i<list.size();i++) {
     			Message message=list.get(i);
-    			sourceUserNameList.set(i, message.getSentUser());
-    			contentList.set(i, message.getDate()+message.getContent());
+    			sourceUserNameList.add(i, message.getSentUser());
+    			contentList.add(i, message.getDate()+message.getContent());
     		}
     		
     		sendingMessageDao.deleteMessageByUser(userName);
@@ -103,10 +107,10 @@ public class DataManager {
 
 
     /**
-     * Êı¾İ¿â·½ÃæµÄsendText¯è½«Ã¿´Î·¢ËÍµÄÏûÏ¢´æµ½Êı¾İ¿âÖĞ×÷ÎªÏûÏ¢¼ÇÂ¼
-     * @param        sourceUserName ·¢ËÍÏûÏ¢µÄÓÃ»§
-     * @param        destUserName ½ÓÊÕÏûÏ¢µÄÓÃ»§
-     * @param        content ÏûÏ¢ÄÚÈİ
+     * ï¿½ï¿½ï¿½İ¿â·½ï¿½ï¿½ï¿½sendTextï¿½è½«Ã¿ï¿½Î·ï¿½ï¿½Íµï¿½ï¿½ï¿½Ï¢ï¿½æµ½ï¿½ï¿½ï¿½İ¿ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Ï¢ï¿½ï¿½Â¼
+     * @param        sourceUserName ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½Ã»ï¿½
+     * @param        destUserName ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½Ã»ï¿½
+     * @param        content ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½
      */
     public void sendText(String sourceUserName, String destUserName, String content)
     {
@@ -122,9 +126,9 @@ public class DataManager {
 
 
     /**
-     * Í¨¹ı¹Ø¼ü×ÖÀ´²éÕÒÓÃ»§
-     * @return        List<User> ºÍÕâ¸ö¹Ø¼ü×ÖÏà¹ØµÄÓÃ»§List
-     * @param        keyword ¹Ø¼ü×Ö
+     * Í¨ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½
+     * @return        List<User> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½Ã»ï¿½List
+     * @param        keyword ï¿½Ø¼ï¿½ï¿½ï¿½
      */
     public List<User> queryUser(String keyword)
     {
@@ -145,18 +149,18 @@ public class DataManager {
 
 
     /**
-     * ¸Ä±äºÃÓÑµÄ¹ØÏµ£¬Êµ¼ÊÊÇÔÚÊı¾İ¿âÖĞÉ¾³ı»òÌí¼ÓÏàÓ¦µÄ¼ÇÂ¼
-     * @param        user1 ÓÃ»§¼×
-     * @param        user2 ÓÃ»§ÒÒ
-     * @param        isFriend ÊÇ·ñÊÇºÃÓÑ
+     * ï¿½Ä±ï¿½ï¿½ï¿½ÑµÄ¹ï¿½Ïµï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İ¿ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½Ä¼ï¿½Â¼
+     * @param        user1  the main user
+     * @param        user2  the friend
+     * @param        isFriend ï¿½Ç·ï¿½ï¿½Çºï¿½ï¿½ï¿½
      */
     public void changeUserRelation(String user1, String user2, boolean isFriend)
     {
     	FriendDao friendDao = new FriendDao();
     	Friend friend = new Friend();
     	User user = new User();
-    	friend.setName(user2);//user2ÊÇºÃÓÑ
-    	user.setUserName(user1);//user1ÊÇ±»Ìí¼Ó»òÉ¾³ıºÃÓÑµÄÓÃ»§
+    	friend.setName(user2);//user2ï¿½Çºï¿½ï¿½ï¿½
+    	user.setUserName(user1);//user1ï¿½Ç±ï¿½ï¿½ï¿½Ó»ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½Ñµï¿½ï¿½Ã»ï¿½
     	if(isFriend) {
     		friendDao.addFriendToUser(friend, user);
     	}
@@ -167,9 +171,9 @@ public class DataManager {
 
 
     /**
-     * Í¨¹ıÓÃ»§Ãû²éÕÒÕâ¸öÓÃ»§µÄËùÓĞºÃÓÑ
-     * @param        userName ±»À­È¡ºÃÓÑµÄÓÃ»§Ãû
-     * @return       List<Friend> ·µ»ØÕâ¸öÓÃ»§µÄËùÓĞºÃÓÑ£¬·ÅÔÚListÖĞ 
+     * Í¨ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğºï¿½ï¿½ï¿½
+     * @param        userName ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½Ñµï¿½ï¿½Ã»ï¿½ï¿½ï¿½
+     * @return       List<Friend> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğºï¿½ï¿½Ñ£ï¿½ï¿½ï¿½ï¿½ï¿½Listï¿½ï¿½ 
      */
     public List<Friend> queryFriendList(String userName)
     {

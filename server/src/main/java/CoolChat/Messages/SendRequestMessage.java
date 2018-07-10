@@ -21,7 +21,7 @@ public class SendRequestMessage extends Message {
 
 	@Override
 	public Message getResult(HashMap<String, IoSession> sessions, IoSession session, DataManager dataManager) {
-		// TODO 同前面那几个
+		
 		return null;
 	}
 

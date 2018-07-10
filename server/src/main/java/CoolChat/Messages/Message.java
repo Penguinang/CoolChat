@@ -162,8 +162,9 @@ abstract public class Message {
     	    byte[] ReplyPermissionyRemark=new byte[ReplyPermissionyRemarkLength];
     	    input.get(ReplyPermissionyRemark);
     	    
-    	    return new SendReplyMessage(rIsAgree,removeLastChar(new String(ReplyPermissionTargetUserName)),removeLastChar(new String(ReplyPermissionyRemark)));
-    		
+    	    //return new Re(rIsAgree,removeLastChar(new String(ReplyPermissionTargetUserName)),removeLastChar(new String(ReplyPermissionyRemark)));
+    		return new ReplyPermissionMessage(rIsAgree, removeLastChar(new String(ReplyPermissionTargetUserName)),removeLastChar(new String(ReplyPermissionyRemark)) );
+    	    
     	case 12://SendReplyMessage
     		byte sIsAgree=input.get();
     		

@@ -26,7 +26,17 @@ public class ReplyPermissionMessage extends Message {
 		// TODO
 		String sourceUserName=session.getAttribute("userName").toString();
 		
-		return new SendReplyMessage(this.isAgree, sourceUserName,this.remark);
+		if(sessions.get(targetUserName)!=null) {
+			if(isAgree==1) {
+				dataManager.changeUserRelation(sourceUserName, targetUserName, true);
+				dataManager.changeUserRelation(targetUserName, sourceUserName, true);
+			}
+			sessions.get(targetUserName).write(new SendReplyMessage(this.isAgree, sourceUserName,this.remark));
+		}
+		else {
+			System.out.println("the user don't online");
+		}
+		return null;
 	}
 
 	@Override

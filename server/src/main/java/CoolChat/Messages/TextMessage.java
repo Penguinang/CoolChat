@@ -26,6 +26,9 @@ public class TextMessage extends Message {
 	public Message getResult(HashMap<String, IoSession> sessions, IoSession session, DataManager dataManager) {
 		
 		IoSession aSession = sessions.get(userName);
+		if(aSession== null) {
+			System.out.println("this user isn't online or don't exist.");
+		}
 		if(aSession.containsAttribute("login")) {
 			TextMessage resultMessage=new TextMessage(session.getAttribute("userName").toString(),content);
 			session.write(resultMessage);
@@ -42,7 +45,7 @@ public class TextMessage extends Message {
 
 	@Override
 	public byte[] getProtocolEncodedBytes() {
-		//缂栧彿涓�6
+		//messageType is 6
 		byte messageType=6;
 		int userNameLength=this.userName.length();
 		byte[] userNameB=this.userName.getBytes();
