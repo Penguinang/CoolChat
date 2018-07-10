@@ -30,7 +30,8 @@ SOURCES += \
     loginwindow.cpp \
     registerwindow.cpp \
     chatwindow.cpp \
-    applicationwindow.cpp
+    applicationwindow.cpp \
+    systemwindow.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -39,7 +40,8 @@ HEADERS += \
     registerwindow.h \
     chatwindow.h \
     applicationwindow.h \
-    server.h
+    server.h \
+    systemwindow.h
 
 FORMS += \
         mainwindow.ui

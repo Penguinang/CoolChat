@@ -10,8 +10,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    Server* m_server=new Server (string ip = "localhost", int port，void(*get_text_callback)(string username, string time, string content));
-    LoginWindow w(0,m_server);
+    LoginWindow w(0);
     w.show();
     return a.exec();
 }

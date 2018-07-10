@@ -19,8 +19,9 @@
 using namespace std ;
 
 //查找好友界面
-AddFriend::AddFriend(QWidget *parent,Server *server): QWidget(parent)
+AddFriend::AddFriend(QWidget *parent,Server *server,MainWindow *mainwin): QWidget(parent)
 {
+    this->mainwin=mainwin;
     this->m_server = server;
 
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint);
@@ -78,8 +79,7 @@ AddFriend::~AddFriend()
 
 void AddFriend::SearchFriend()
 {
-    AddFriend a;
-    auto callback=std::bind(&AddFriend::callback,a,placeholders::_1);
+    auto callback=std::bind(&AddFriend::callback,this,placeholders::_1);
     //向服务器查询用户列表
     m_server->QueryInformationByID(input->text().toStdString(),callback);
 }
@@ -143,7 +143,7 @@ void AddFriend::windowmin()
 void AddFriend::BtnListOnClicked()
 {
     QPushButton* btn= qobject_cast<QPushButton*>(sender());
-    ApplicationWindow* aWindow = new ApplicationWindow(0,"请输入添加"+btn->text()+"为好友的理由：",this->m_server);
+    ApplicationWindow* aWindow = new ApplicationWindow(0,"请输入添加"+btn->text()+"为好友的理由：",this->m_server,this->mainwin);
     aWindow->show();
 }
 

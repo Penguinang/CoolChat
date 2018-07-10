@@ -1,6 +1,7 @@
 ﻿#include "loginwindow.h"
 #include "registerwindow.h"
 #include "mainwindow.h"
+#include "server.h"
 #include <QPainter>
 #include <QColor>
 #include <QLabel>
@@ -29,10 +30,12 @@ using namespace std;
 using namespace std::placeholders;
 
 //登录界面
-LoginWindow::LoginWindow(QWidget *parent,Server *server)
+LoginWindow::LoginWindow(QWidget *parent)
     :QWidget(parent)
 {
-    this->m_server = server;
+    auto get_text_callback=std::bind(&MainWindow::get_text_callback,mainwin,placeholders::_1,placeholders::_2,placeholders::_3);
+    m_server = new Server("localhost",port,get_text_callback);
+
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint);
     this->setAttribute(Qt::WA_TranslucentBackground);
 
@@ -158,8 +161,7 @@ void LoginWindow::slotLogin()
     //初步判断用户输入格式，并通知服务器登录
     if((getUserName()==true )&& (getPassWord()==true))
     {
-    LoginWindow l;
-    auto callback=std::bind(&LoginWindow::callback,l,placeholders::_1,placeholders::_2);
+    auto callback=std::bind(&LoginWindow::callback,this,placeholders::_1,placeholders::_2);
     m_server->Login(g_username.toStdString(),g_password.toStdString(),callback);
     MainWindow* mainwin = new MainWindow();
     mainwin->show();
@@ -252,7 +254,7 @@ void LoginWindow::callback(bool success,std::string extra)
 {
     if(success == true)
     {
-        MainWindow* mainwin = new MainWindow();
+        mainwin = new MainWindow();
         mainwin->show();
         this->close();
     }

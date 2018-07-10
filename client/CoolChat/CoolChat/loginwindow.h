@@ -8,6 +8,7 @@
 #include <QPoint>
 #include <QString>
 #include "registerwindow.h"
+#include "mainwindow.h"
 #include <string>
 #include <server.h>
 
@@ -21,21 +22,22 @@ class LoginWindow : public QWidget
     Q_OBJECT
 
 public:
-    LoginWindow(QWidget *parent=0,Server *server);
+    LoginWindow(QWidget *parent=0);
     ~LoginWindow();
 
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
-
-private:
-
-    void paintEvent(QPaintEvent *);
     bool getUserName();
     bool getPassWord();
     void callback(bool,std::string);
     bool checkUserName(QString);
     void showTips(QString);
+
+private:
+
+    void paintEvent(QPaintEvent *);
+
 
     Server *m_server;
 
@@ -61,6 +63,8 @@ private:
 
     QLabel* tips;//提示消息
     bool m_tips;//提示消息是否出现
+
+    MainWindow* mainwin;
 
 
 private slots:

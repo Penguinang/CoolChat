@@ -5,12 +5,13 @@
 #include <QPushButton>
 #include <QString>
 #include <server.h>
+#include "mainwindow.h"
 
 class ApplicationWindow: public QWidget
 {
     Q_OBJECT
 public:
-    ApplicationWindow(QWidget *parent=0,QString string = NULL,Server *server);
+    ApplicationWindow(QWidget *parent=0,QString string = NULL,Server *server=NULL,MainWindow *mainwin=NULL);
 
 private:
     Server m_server;
@@ -19,6 +20,7 @@ private:
     QPushButton* exit;//退出按钮
     QString userId;
     void paintEvent(QPaintEvent *);
+    MainWindow* mainwin;
 
 private slots:
     void sendBtnOnClicked();

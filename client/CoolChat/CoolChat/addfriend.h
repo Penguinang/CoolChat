@@ -14,6 +14,7 @@
 #include "string"
 #include <string>
 #include <server.h>
+#include <mainwindow.h>
 
 using namespace std ;
 
@@ -21,9 +22,6 @@ class AddFriend:public QWidget
 {
     Q_OBJECT
 public:
-    explicit AddFriend(QWidget *parent=0,Server *server);
-    ~AddFriend();
-private:
     Server *m_server;
     QGridLayout *pLayout;
     QWidget* pWidget;
@@ -31,16 +29,24 @@ private:
     QPushButton* min;//最小化按钮
     QPushButton* exit;//退出按钮
     string str[5];
-    void paintEvent(QPaintEvent *);
+    MainWindow *mainwin;
+
+    explicit AddFriend(QWidget *parent=0,Server *server=NULL,MainWindow *mainwin);
+    ~AddFriend();
     void callback();
+
+private:
+    void paintEvent(QPaintEvent *);
+
 
 signals:
 public slots:
-private slots:
     void SearchFriend();
     void windowclosed();
     void windowmin();
     void BtnListOnClicked();
+private slots:
+
 
 };
 

@@ -1,4 +1,5 @@
 ﻿#include "applicationwindow.h"
+#include "mainwindow.h"
 #include <QTextEdit>
 #include <QPushButton>
 #include <QString>
@@ -6,6 +7,8 @@
 #include <QPalette>
 #include <QPainter>
 #include "server.h"
+#include <functional>
+#include <QListWidgetItem>
 
 //中文乱码处理
 #if _MSC_VER >= 1600
@@ -13,8 +16,9 @@
 #endif
 
 //好友申请界面
-ApplicationWindow::ApplicationWindow(QWidget *parent,QString string,Server *server):QWidget(parent)
+ApplicationWindow::ApplicationWindow(QWidget *parent,QString string,Server *server,MainWindow *mainwin):QWidget(parent)
 {
+    this->mainwin = mainwin;
     this->m_server = server;
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint);
     this->setAttribute(Qt::WA_TranslucentBackground);
@@ -28,7 +32,7 @@ ApplicationWindow::ApplicationWindow(QWidget *parent,QString string,Server *serv
 
     application=new QTextEdit(this);
     application->setFont(*font);
-    application->setPlaceholderText("申请理由…"+string);
+    application->setPlaceholderText("您将添加"+string+"为好友，请填写申请理由…");
     application->setFocus();
     application->setGeometry(QRect(50,100,400,300));
 
@@ -93,7 +97,8 @@ void ApplicationWindow::windowmin()
 
 void ApplicationWindow::sendBtnOnClicked()
 {
-    //请求添加好友
-    m_server->RequestAddFriend(userId.toStdString(),application->toPlainText().toStdString(),NULL);
+    m_server->RequestAddFriend(userId.toStdString(),application->toPlainText().toStdString());
     this->close();
 }
+
+

@@ -22,6 +22,7 @@ public:
     bool getPassword();
     bool getConfirmpw();
     bool getEmail();
+    void showTips(QString);
 
 signals:
 
@@ -54,7 +55,7 @@ private:
     QLabel* tips;//提示消息
     bool m_tips;//提示消息是否出现
     void paintEvent(QPaintEvent *);
-    void showTips(QString);
+
 
 };
 
