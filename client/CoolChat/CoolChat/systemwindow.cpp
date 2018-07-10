@@ -1,4 +1,4 @@
-﻿#include "chatwindow.h"
+﻿#include "SystemWindow.h"
 #include <QWidget>
 #include <QLabel>
 #include <QTextEdit>
@@ -18,6 +18,7 @@
 #include <QSizePolicy>
 #include <QKeyEvent>
 #include "Server.h"
+#include "mainwindow.h"
 
 /*
  * 聊天窗口Constructor
@@ -32,7 +33,7 @@
 #pragma execution_character_set("utf-8")
 #endif
 
-ChatWindow::ChatWindow(QWidget *parent,QString chatID,int chatHeight,int chatWidth,Server* server,MainWindow* mainwin)
+SystemWindow::SystemWindow(QWidget *parent,QString chatID,int chatHeight,int chatWidth,Server* server,MainWindow* mainwin)
     :QWidget(parent)
 {
     this->mainwin = mainwin;
@@ -44,6 +45,7 @@ ChatWindow::ChatWindow(QWidget *parent,QString chatID,int chatHeight,int chatWid
     this->setMinimumSize(chatWidth,chatHeight);
 
     this->m_tips = false;
+    this->newmsg = false;
     this->m_head = QString("<img class='header' src=qrc:/new/img/img/FaceQ.jpg>");
     this->f_head = QString("<img class='header' src=qrc:/new/img/img/FaceQ.jpg>");
 
@@ -112,45 +114,46 @@ ChatWindow::ChatWindow(QWidget *parent,QString chatID,int chatHeight,int chatWid
     //发送按钮
     QFont *font=new QFont("Microsoft YaHei",12,0);
     font->setLetterSpacing(QFont::AbsoluteSpacing,0.5);
-    sentBtn = new QPushButton(tr("SEND"),this);
-    sentBtn->setFont(*font);
-    sentBtn->setPalette(pa);
-    sentBtn->setStyleSheet("QPushButton{background-color:rgb(0,162,232);border:2px groove white;border-radius:10px;padding:2px 4px;color:white;}"
+    agreeBtn = new QPushButton(tr("同意"),this);
+    agreeBtn->setFont(*font);
+    agreeBtn->setPalette(pa);
+    agreeBtn->setStyleSheet("QPushButton{background-color:rgb(0,162,232);border:2px groove white;border-radius:10px;padding:2px 4px;color:white;}"
                            "QPushButton:pressed{background-color:rgb(153,217,234);}");
-    sentBtn->setMinimumHeight(40);
-    sentBtn->setMinimumWidth(100);
-    sentBtn->move(chatWidth-120,chatHeight-60);
+    agreeBtn->setMinimumHeight(40);
+    agreeBtn->setMinimumWidth(100);
+    agreeBtn->move(chatWidth-120,chatHeight-60);
 
-    connect(sentBtn,SIGNAL(clicked()),this,SLOT(sentBtnOnClicked()));
+    connect(agreeBtn,SIGNAL(clicked()),this,SLOT(agreeBtnOnClicked()));
 
-    deleteBtn = new QPushButton(tr("SEND"),this);
-    deleteBtn->setFont(*font);
-    deleteBtn->setPalette(pa);
-    deleteBtn->setStyleSheet("QPushButton{background-color:rgb(0,162,232);border:2px groove white;border-radius:10px;padding:2px 4px;color:white;}"
+    //拒绝按钮
+    refuseBtn = new QPushButton(tr("拒绝"),this);
+    refuseBtn->setFont(*font);
+    refuseBtn->setPalette(pa);
+    refuseBtn->setStyleSheet("QPushButton{background-color:rgb(0,162,232);border:2px groove white;border-radius:10px;padding:2px 4px;color:white;}"
                            "QPushButton:pressed{background-color:rgb(153,217,234);}");
-    deleteBtn->setMinimumHeight(40);
-    deleteBtn->setMinimumWidth(100);
-    deleteBtn->move(chatWidth-240,chatHeight-60);
+    refuseBtn->setMinimumHeight(40);
+    refuseBtn->setMinimumWidth(100);
+    refuseBtn->move(chatWidth-240,chatHeight-60);
 
-    connect(deleteBtn,SIGNAL(clicked()),this,SLOT(deleteBtnOnClicked()));
+    connect(refuseBtn,SIGNAL(clicked()),this,SLOT(refuseBtnOnClicked()));
 }
 
-ChatWindow::~ChatWindow()
+SystemWindow::~SystemWindow()
 {
 
 }
 
-void ChatWindow::windowclosed()
+void SystemWindow::windowclosed()
 {
     this->close();
 }
 
-void ChatWindow::windowmin()
+void SystemWindow::windowmin()
 {
     this->showMinimized();
 }
 
-void ChatWindow::paintEvent(QPaintEvent *event)
+void SystemWindow::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
     QPainter p(this);
@@ -165,52 +168,40 @@ void ChatWindow::paintEvent(QPaintEvent *event)
     p.drawRect(0,0,this->width(),this->height());
 }
 
-void ChatWindow::sentBtnOnClicked()
+void SystemWindow::agreeBtnOnClicked()
 {
-    if(msgEditWindow->toPlainText()==NULL&&m_tips == false)
+    if(msgEditWindow->toPlainText()==NULL&&m_tips == false&&this->newmsg==true)
     {
         m_tips = true;
-        this->showFailureTips(tr("Massage can't be empty!"));
+        this->showFailureTips(tr("已同意！"));
         QTimer::singleShot(3000,this,SLOT(hideFailureTips()));
         QTimer::singleShot(2700,this,SLOT(hideFailureTips_1()));
         QTimer::singleShot(2800,this,SLOT(hideFailureTips_2()));
         QTimer::singleShot(2900,this,SLOT(hideFailureTips_3()));
-        return;
+        m_server->ReplyFriendRequest(username,true,msgEditWindow->toPlainText().toStdString());
+        mainwin->addFriend(username);
+        mainwin->update();
     }
-    auto callback=std::bind(&ChatWindow::callback,this,placeholders::_1);
-    //发送消息
-    m_server->SendText(this->chatID.toStdString(),msgEditWindow->toPlainText().toStdString(),callback);
+    this->newmsg = false;
 }
 
-void ChatWindow::deleteBtnOnClicked()
+void SystemWindow::refuseBtnOnClicked()
 {
-    string tmp = this->chatID;
-    m_server->DeleteFriend (this->chatID);
-    mainwin->deleteFriend(tmp);
-}
-
-void ChatWindow::callback(bool success)
-{
-    //若消息发送失败，显示消息框提醒
-    if(success == false&&m_tips == false)
+    if(msgEditWindow->toPlainText()==NULL&&m_tips == false&&this->newmsg==true)
     {
         m_tips = true;
-        this->showFailureTips(tr("Send Massage Failed!"));
+        this->showFailureTips(tr("已拒绝！"));
         QTimer::singleShot(3000,this,SLOT(hideFailureTips()));
         QTimer::singleShot(2700,this,SLOT(hideFailureTips_1()));
         QTimer::singleShot(2800,this,SLOT(hideFailureTips_2()));
         QTimer::singleShot(2900,this,SLOT(hideFailureTips_3()));
+        m_server->ReplyFriendRequest(username,false,msgEditWindow->toPlainText().toStdString());
     }
-    //若消息发送成功，在消息显示框中显示消息
-    else
-    {
-        sendMsgShow(msgEditWindow->toPlainText(),NULL);
-        msgEditWindow->clear();
-    }
+    this->newmsg = false;
 }
 
-//提示消息发送失败
-void ChatWindow::showFailureTips(QString tipMsg)
+//显示提示消息框并渐变效果隐藏消失
+void LoginWindow::showTips(QString tipMsg)
 {
     tips = new QLabel(this);
     tips->setMaximumHeight(50);
@@ -222,70 +213,40 @@ void ChatWindow::showFailureTips(QString tipMsg)
     tips->adjustSize();
     tips->move((this->width()-tips->width())/2,(this->height()-tips->height())/2);
     tips->show();
+    m_tips = true;
+    QTimer::singleShot(3000,this,SLOT(hideTips()));
+    QTimer::singleShot(2700,this,SLOT(hideTips_1()));
+    QTimer::singleShot(2800,this,SLOT(hideTips_2()));
+    QTimer::singleShot(2900,this,SLOT(hideTips_3()));
 }
 
 //提示消息框渐变隐藏消失
-void ChatWindow::hideFailureTips()
+void SystemWindow::hideTips()
 {
     tips->hide();
     m_tips=false;
 }
 
-void ChatWindow::hideFailureTips_1()
+void SystemWindow::hideTips_1()
 {
     QGraphicsOpacityEffect *opacityEffect=new QGraphicsOpacityEffect;
     tips->setGraphicsEffect(opacityEffect);
     opacityEffect->setOpacity(0.8);
 }
 
-void ChatWindow::hideFailureTips_2()
+void SystemWindow::hideTips_2()
 {
     QGraphicsOpacityEffect *opacityEffect=new QGraphicsOpacityEffect;
     tips->setGraphicsEffect(opacityEffect);
     opacityEffect->setOpacity(0.5);
 }
 
-void ChatWindow::hideFailureTips_3()
+void SystemWindow::hideTips_3()
 {
     QGraphicsOpacityEffect *opacityEffect=new QGraphicsOpacityEffect;
     tips->setGraphicsEffect(opacityEffect);
     opacityEffect->setOpacity(0.2);
 }
 
-void ChatWindow::sendMsgShow(QString msg, QString head)
-{
-
-    //将换行转换成<br>,否则html仅显示为空格
-    msg.replace("\n","<br>");
-    QString html = QString("<div class='msg-wrap right'><img class='header' src='qrc:/new/img/img/FaceQ.jpg' ><div class='msg'>%1<span class='trigon'></span></div></div>").arg(msg);
-    m_html.append(html);
-    msgShowWindow->setHtml(m_html+"</div>");
-    msgShowWindow->show();
-
-}
-
-void ChatWindow::recvMsgShow(QString msg, QString head)
-{
-    QString html = QString("<div class='msg-wrap left'><img class='header' src='qrc:/new/img/img/FaceQ.jpg' ><div class='msg'>%1<span class='trigon'></span></div></div>").arg(msg);
-    m_html.append(html);
-    msgShowWindow->setHtml(m_html+"</div>");
-    msgShowWindow->show();
-}
-
-//按下Ctrl+Enter发送消息
-bool ChatWindow::eventFilter(QObject *obj, QEvent *e)
-{
-    Q_ASSERT(obj == msgEditWindow);
-    if (e->type() == QEvent::KeyPress)
-    {
-        QKeyEvent *event = static_cast<QKeyEvent*>(e);
-        if (event->key() == Qt::Key_Return && (event->modifiers() & Qt::ControlModifier))
-        {
-            sentBtnOnClicked();
-            return true;
-        }
-    }
-    return false;
-}
 
 

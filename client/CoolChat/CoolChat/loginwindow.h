@@ -8,8 +8,10 @@
 #include <QPoint>
 #include <QString>
 #include "registerwindow.h"
+#include "mainwindow.h"
 #include <string>
-//#include "server.h"
+#include <server.h>
+
 
 namespace Ui {
 class LoginWindow;
@@ -26,13 +28,18 @@ public:
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
+    bool getUserName();
+    bool getPassWord();
+    void callback(bool,std::string);
+    bool checkUserName(QString);
+    void showTips(QString);
 
 private:
 
     void paintEvent(QPaintEvent *);
-    void getUserName();
-    void getPassWord();
-    void callback(bool,std::string);
+
+
+    Server *m_server;
 
     QLabel *userNameLabel;
     QLabel *passWordLabel;
@@ -50,10 +57,14 @@ private:
     QPoint mPntStart;
 
     RegisterWindow *registerWindow;
-    //Server *m_server;
 
     QString g_username;
     QString g_password;
+
+    QLabel* tips;//提示消息
+    bool m_tips;//提示消息是否出现
+
+    MainWindow* mainwin;
 
 
 private slots:
@@ -61,6 +72,10 @@ private slots:
     void windowmin();
     void slotLogin();
     void slotRegister();
+    void hideTips();
+    void hideTips_1();
+    void hideTips_2();
+    void hideTips_3();
 
 };
 
