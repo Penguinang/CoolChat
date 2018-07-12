@@ -1,4 +1,4 @@
-﻿#include "Server.h"
+#include "Server.h"
 #include "applicationwindow.h"
 #include "mainwindow.h"
 #include <QTextEdit>

@@ -1,4 +1,4 @@
-﻿#include "Server.h"
+#include "Server.h"
 #include "registerwindow.h"
 #include "string.h"
 #include <QPainter>

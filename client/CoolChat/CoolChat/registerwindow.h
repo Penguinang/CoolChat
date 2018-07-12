@@ -1,4 +1,4 @@
-﻿#ifndef REGISTERWINDOW_H
+#ifndef REGISTERWINDOW_H
 #define REGISTERWINDOW_H
 
 #include "Server.h"

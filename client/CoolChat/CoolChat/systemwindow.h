@@ -1,4 +1,4 @@
-﻿#ifndef SystemWindow_H
+#ifndef SystemWindow_H
 #define SystemWindow_H
 #include "Server.h"
 #include <QWidget>

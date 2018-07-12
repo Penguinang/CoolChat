@@ -1,4 +1,4 @@
-﻿#include "Server.h"
+#include "Server.h"
 #include "addfriend.h"
 #include <QLineEdit>
 #include <QIcon>

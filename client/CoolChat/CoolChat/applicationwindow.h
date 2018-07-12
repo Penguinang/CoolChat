@@ -1,4 +1,4 @@
-﻿#ifndef APPLICATIONWINDOW_H
+#ifndef APPLICATIONWINDOW_H
 #define APPLICATIONWINDOW_H
 
 #include "Server.h"

@@ -1,4 +1,4 @@
-﻿#ifndef ADDFRIEND_H
+#ifndef ADDFRIEND_H
 #define ADDFRIEND_H
 
 #include "Server.h"

@@ -1,4 +1,4 @@
-﻿#ifndef LOGINWINDOW_H
+#ifndef LOGINWINDOW_H
 #define LOGINWINDOW_H
 
 #include "Server.h"

@@ -1,4 +1,4 @@
-﻿#include "Server.h"
+#include "Server.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "addfriend.h"

@@ -1,4 +1,4 @@
-﻿#include "Server.h"
+#include "Server.h"
 #include "chatwindow.h"
 #include <QWidget>
 #include <QLabel>

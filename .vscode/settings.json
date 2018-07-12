@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.pro": "shellscript",
+        "qlineedit": "cpp",
+        "qpaintevent": "cpp",
+        "qwebengineview": "cpp"
+    }
+}
