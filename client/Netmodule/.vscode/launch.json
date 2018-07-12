@@ -9,7 +9,7 @@
             "name": "(gdb) Test",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/test/testClient",
+            "program": "${workspaceFolder}/test/makefiles/testClient",
             "args": ["Mike", "123123"],
             // "args": ["Micheal", "password"],
             "stopAtEntry": false,

@@ -1,6 +1,5 @@
-﻿#include "chatwindow.h"
-
-
+﻿#include "Server.h"
+#include "chatwindow.h"
 #include <QWidget>
 #include <QLabel>
 #include <QTextEdit>
@@ -17,8 +16,8 @@
 #include <QGraphicsOpacityEffect>
 #include <QSplitter>
 #include <QWebEngineView>
-
-//#include "Server.h"
+#include <QSizePolicy>
+#include <QKeyEvent>
 
 /*
  * 聊天窗口Constructor
@@ -27,18 +26,31 @@
  * @param chatHeight 窗口高度
  * @param chatWidth 窗口宽度
  */
-ChatWindow::ChatWindow(QWidget *parent,QString chatID,int chatHeight,int chatWidth)
+
+//中文乱码处理
+#if _MSC_VER >= 1600
+#pragma execution_character_set("utf-8")
+#endif
+
+ChatWindow::ChatWindow(Server *server,QWidget *parent,QString chatID,int chatHeight,int chatWidth,MainWindow* mainwin)
     :QWidget(parent)
 {
+    this->mainwin = mainwin;
+    this->m_server = server;
     this->chatID = chatID;
     this->setWindowFlags(Qt::FramelessWindowHint| Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint);
     this->setAttribute(Qt::WA_TranslucentBackground);
     this->setMaximumSize(chatWidth,chatHeight);
     this->setMinimumSize(chatWidth,chatHeight);
 
+    this->m_tips = false;
+    this->m_head = QString("<img class='header' src=qrc:/new/img/img/FaceQ.jpg>");
+    this->f_head = QString("<img class='header' src=qrc:/new/img/img/FaceQ.jpg>");
+
     QPalette pa;
     pa.setColor(QPalette::WindowText,Qt::white);
 
+    //退出与最小化
     exit = new QPushButton(this);
     exit->setStyleSheet("QPushButton{border-image:url(:/new/img/img/exit.png);}"
                         "QPushButton:hover{border-image:url(:/new/img/img/exit1.png);}"
@@ -57,11 +69,14 @@ ChatWindow::ChatWindow(QWidget *parent,QString chatID,int chatHeight,int chatWid
     connect(exit,SIGNAL(clicked()),this,SLOT(windowclosed()));
     connect(min,SIGNAL(clicked()),this,SLOT(windowmin()));
 
+    //好友名称标签
     friendName = new QLabel(chatID,this);
     friendName -> setFont(QFont("Microsoft YaHei", chatHeight/30, 0));
     friendName -> adjustSize();
+    friendName->setMinimumSize(100, 30);
     friendName -> move(0,10);
 
+    //消息显示框和消息编辑框
     QWidget* w_splitter = new QWidget(this);
     w_splitter->setMaximumHeight(chatHeight-friendName->height()-100);
     w_splitter->setMaximumWidth(chatWidth);
@@ -79,11 +94,23 @@ ChatWindow::ChatWindow(QWidget *parent,QString chatID,int chatHeight,int chatWid
     chatSplitter->addWidget(msgShowWindow);
     chatSplitter->addWidget(msgEditWindow);
     chatSplitter->adjustSize();
-    //msgShowWindow->setStyleSheet("QWebEngineView{background-color:rgb(250,250,250);border:none;}");
     msgEditWindow->setStyleSheet("QTextEdit{border:rgb(100,100,100)}");
     chatSplitter->setStretchFactor(0,7);
     chatSplitter->setStretchFactor(1,3);
 
+
+    QFile source(":/new/html/html/chat.html");
+    source.open(QIODevice::ReadOnly);
+    m_html = QString::fromUtf8(source.readAll());
+    msgShowWindow->setHtml(m_html+"</div>");
+    source.close();
+
+    msgShowWindow->setFocusPolicy(Qt::NoFocus);
+    msgEditWindow->setFocusPolicy(Qt::StrongFocus);
+    msgEditWindow->setFocus();
+    msgEditWindow->installEventFilter(this);
+
+    //发送按钮
     QFont *font=new QFont("Microsoft YaHei",12,0);
     font->setLetterSpacing(QFont::AbsoluteSpacing,0.5);
     sentBtn = new QPushButton(tr("SEND"),this);
@@ -97,7 +124,18 @@ ChatWindow::ChatWindow(QWidget *parent,QString chatID,int chatHeight,int chatWid
 
     connect(sentBtn,SIGNAL(clicked()),this,SLOT(sentBtnOnClicked()));
 
+    deleteBtn = new QPushButton(tr("DELETE"),this);
+    deleteBtn->setFont(*font);
+    deleteBtn->setPalette(pa);
+    deleteBtn->setStyleSheet("QPushButton{background-color:rgb(0,162,232);border:2px groove white;border-radius:10px;padding:2px 4px;color:white;}"
+                           "QPushButton:pressed{background-color:rgb(153,217,234);}");
+    deleteBtn->setMinimumHeight(40);
+    deleteBtn->setMinimumWidth(100);
+    deleteBtn->move(chatWidth-240,chatHeight-60);
+
+    connect(deleteBtn,SIGNAL(clicked()),this,SLOT(deleteBtnOnClicked()));
 }
+
 ChatWindow::~ChatWindow()
 {
 
@@ -130,23 +168,35 @@ void ChatWindow::paintEvent(QPaintEvent *event)
 
 void ChatWindow::sentBtnOnClicked()
 {
-    //msgInEdit = msgEditWindow->toPlainText();
-    //std::string s_msgInEdit = msgInEdit.toStdString();
-    //std::string s_chatId = this->chatID.toStdString();
-    //调用服务器功能，向好友发送文字信息
-    //void (ChatWindow::*pCallback)(bool,std::string)= &ChatWindow::callback;
-    //m_server->SendText(s_chatId,s_msgInEdit,pCallback);
+    if(msgEditWindow->toPlainText()==NULL&&m_tips == false)
+    {
+        m_tips = true;
+        this->showFailureTips(tr("Massage can't be empty!"));
+        QTimer::singleShot(3000,this,SLOT(hideFailureTips()));
+        QTimer::singleShot(2700,this,SLOT(hideFailureTips_1()));
+        QTimer::singleShot(2800,this,SLOT(hideFailureTips_2()));
+        QTimer::singleShot(2900,this,SLOT(hideFailureTips_3()));
+        return;
+    }
+    auto callback=std::bind(&ChatWindow::callback,this,placeholders::_1);
+    //发送消息
+    m_server->SendText(this->friendName->text().toStdString(),msgEditWindow->toPlainText().toStdString(),callback);
+}
 
-    //假设失败，显示消息发送失败提醒框
-    callback(false);
+void ChatWindow::deleteBtnOnClicked()
+{
+    QString tmp = this->chatID;
+    m_server->DeleteFriend (this->chatID.toStdString());
+    mainwin->deleteFriend(tmp.toStdString());
 }
 
 void ChatWindow::callback(bool success)
 {
     //若消息发送失败，显示消息框提醒
-    if(success == false)
+    if(success == false&&m_tips == false)
     {
-        this->showFailureTips();
+        m_tips = true;
+        this->showFailureTips(tr("Send Massage Failed!"));
         QTimer::singleShot(3000,this,SLOT(hideFailureTips()));
         QTimer::singleShot(2700,this,SLOT(hideFailureTips_1()));
         QTimer::singleShot(2800,this,SLOT(hideFailureTips_2()));
@@ -155,20 +205,21 @@ void ChatWindow::callback(bool success)
     //若消息发送成功，在消息显示框中显示消息
     else
     {
-
+        sendMsgShow(msgEditWindow->toPlainText(),NULL);
+        msgEditWindow->clear();
     }
 }
 
-//提示：消息发送失败
-void ChatWindow::showFailureTips()
+//提示消息发送失败
+void ChatWindow::showFailureTips(QString tipMsg)
 {
     tips = new QLabel(this);
     tips->setMaximumHeight(50);
     tips->setMinimumHeight(50);
     QFont *font=new QFont("Microsoft YaHei",12,0);
     tips->setFont(*font);
-    tips->setText("Message Send failed!");
-    tips->setStyleSheet("QLabel{background-color:rgb(107,107,107);color:white;border-radius:10px;padding:2px 4px;}");
+    tips->setText(tipMsg);
+    tips->setStyleSheet("QLabel{background-color:red;color:white;border-radius:10px;padding:2px 4px;}");
     tips->adjustSize();
     tips->move((this->width()-tips->width())/2,(this->height()-tips->height())/2);
     tips->show();
@@ -178,6 +229,7 @@ void ChatWindow::showFailureTips()
 void ChatWindow::hideFailureTips()
 {
     tips->hide();
+    m_tips=false;
 }
 
 void ChatWindow::hideFailureTips_1()
@@ -200,4 +252,41 @@ void ChatWindow::hideFailureTips_3()
     tips->setGraphicsEffect(opacityEffect);
     opacityEffect->setOpacity(0.2);
 }
+
+void ChatWindow::sendMsgShow(QString msg, QString head)
+{
+
+    //将换行转换成<br>,否则html仅显示为空格
+    msg.replace("\n","<br>");
+    QString html = QString("<div class='msg-wrap right'><img class='header' src='qrc:/new/img/img/FaceQ.jpg' ><div class='msg'>%1<span class='trigon'></span></div></div>").arg(msg);
+    m_html.append(html);
+    msgShowWindow->setHtml(m_html+"</div>");
+    msgShowWindow->show();
+
+}
+
+void ChatWindow::recvMsgShow(QString msg, QString head)
+{
+    QString html = QString("<div class='msg-wrap left'><img class='header' src='qrc:/new/img/img/FaceQ.jpg' ><div class='msg'>%1<span class='trigon'></span></div></div>").arg(msg);
+    m_html.append(html);
+    msgShowWindow->setHtml(m_html+"</div>");
+    msgShowWindow->show();
+}
+
+//按下Ctrl+Enter发送消息
+bool ChatWindow::eventFilter(QObject *obj, QEvent *e)
+{
+    Q_ASSERT(obj == msgEditWindow);
+    if (e->type() == QEvent::KeyPress)
+    {
+        QKeyEvent *event = static_cast<QKeyEvent*>(e);
+        if (event->key() == Qt::Key_Return && (event->modifiers() & Qt::ControlModifier))
+        {
+            sentBtnOnClicked();
+            return true;
+        }
+    }
+    return false;
+}
+
 

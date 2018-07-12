@@ -6,7 +6,7 @@
         {
             "label": "compileTest",
             "type": "shell",
-            "command": "cd test && make testClient"
+            "command": "cd test/makefiles && make testClient"
         }
     ]
 }

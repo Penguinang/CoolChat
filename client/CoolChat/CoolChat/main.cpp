@@ -1,14 +1,23 @@
-﻿#include "mainwindow.h"
-#include "loginwindow.h"
-#include "chatwindow.h"
-#include "registerwindow.h"
-#include <QApplication>
+﻿#include "loginwindow.h"
 
+#include <QApplication>
+#include <iostream>
+using namespace std;
+
+//#define null nullptr
 int main(int argc, char *argv[])
 {
+    int c = 0;
+    c+=1;
+// try{
+    int b = 0;
+    b+=0;
     QApplication a(argc, argv);
-
-    ChatWindow w;
+    LoginWindow w(0);
     w.show();
     return a.exec();
+// }
+// catch(exception ex){
+//     cout<<ex.what()<<endl;
+// }
 }

@@ -8,5 +8,9 @@
         <file>img/min.png</file>
         <file>img/min2.png</file>
         <file>img/picture.png</file>
+        <file>img/FaceQ.jpg</file>
+    </qresource>
+    <qresource prefix="/new/html">
+        <file>html/chat.html</file>
     </qresource>
 </RCC>

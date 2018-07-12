@@ -4,6 +4,7 @@
         "functional": "cpp",
         "string_view": "cpp",
         "string": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "typeinfo": "cpp"
     }
 }

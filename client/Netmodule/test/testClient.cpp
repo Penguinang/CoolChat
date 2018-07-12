@@ -3,6 +3,7 @@
 #include "../http/inc/EHttpServerEncoder.hh"
 #include "../http/inc/EHttpServerDecoder.hh"
 #include "../http/inc/EHttpEndOfContent.hh"
+#include "inc/EString.hh"
 
 #include "Server.h"
 #include "Message.h"
@@ -79,7 +80,7 @@ void testQueryFriend(EIoSession *session){
 	sp<Message> msg = new QueryFriendListMessage();
 	EIoBuffer *pb = msg->getEncodedMessage();
 	pb->flip();
-	session->write(pb)->awaitUninterruptibly();		
+	session->write(pb)->awaitUninterruptibly();
 }
 
 void testLogout(EIoSession *session){
@@ -92,6 +93,7 @@ void testLogout(EIoSession *session){
 }
 
 void testClient(){
+	EString a("Text");
 	EIoConnector *connector = new ENioSocketConnector();
 	ServerHandler *handler = new ServerHandler();
 	connector->setConnectTimeoutMillis(30000L);
@@ -99,7 +101,7 @@ void testClient(){
 	sp<EIoSession> session = null;
 
 	try{
-		EInetSocketAddress addr("172.16.136.7", 9123);
+		EInetSocketAddress addr("192.168.137.96", 9123);
 		sp<EConnectFuture> future = connector->connect(&addr);
 		future->awaitUninterruptibly();
 		session = future->getSession();
@@ -109,9 +111,9 @@ void testClient(){
 		// testText(session.dismiss());
 		// testPullMessage(session.dismiss());
 		// testDeleteFriend(session.dismiss());
-		// testQueryFriend(session.dismiss());
+		testQueryFriend(session.dismiss());
 		// testQueryUserInformation(session.dismiss());
-		testRequestFriend(session.dismiss());
+		// testRequestFriend(session.dismiss());
 		// testLogout(session.dismiss());
 		EThread::sleep(100000);
 	}
@@ -135,4 +137,7 @@ int main(int argc, char **argv){
 	username = argv[1];
 	password = argv[2];
 	testClient();
+	// EA<EString> 
+	// Server *s = new Server("192.168.137.96", 9123, );
+
 }
