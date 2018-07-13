@@ -29,17 +29,43 @@ SOURCES += \
     addfriend.cpp \
     loginwindow.cpp \
     registerwindow.cpp \
-    chatwindow.cpp
+    chatwindow.cpp \
+    applicationwindow.cpp \
+    systemwindow.cpp
 
 HEADERS += \
         mainwindow.h \
     addfriend.h \
     loginwindow.h \
     registerwindow.h \
-    chatwindow.h
+    chatwindow.h \
+    applicationwindow.h \
+    systemwindow.h \
+    Server.h
 
 FORMS += \
         mainwindow.ui
 
 RESOURCES += \
     img.qrc
+
+win32{
+    PLATFORM = windows
+}
+
+unix{
+    PLATFORM = linux
+}
+
+NETMODULE_PATH = ../../Netmodule
+
+INCLUDEPATH += \
+    $$NETMODULE_PATH/include \
+    $$NETMODULE_PATH/include/inc \
+    $$NETMODULE_PATH/include/http/inc \
+    $$NETMODULE_PATH/include/CxxJDK/efc \
+    $$NETMODULE_PATH/include/CxxLog4j \
+
+LIBS += \
+    -L $$NETMODULE_PATH/lib/$$PLATFORM \
+    -lNetmodule -lMina -liconv -ldl -lpthread -lcrypto -lefc64 -leso64

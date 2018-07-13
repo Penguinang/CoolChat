@@ -1,14 +1,16 @@
-﻿#ifndef MAINWINDOW_H
+#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
-#include <addfriend.h>
-#include <chatwindow.h>
+#include "Server.h"
 #include <QWidget>
-#include <QtGUi>
+// #include <QtGUi>
 #include <QLabel>
 #include <QListWidget>
 #include <QString>
 #include <QStackedWidget>
+#include <QPainter>
+#include <QString>
+#include <QCloseEvent>
+using namespace std;
 
 namespace Ui {
 class MainWindow;
@@ -19,16 +21,27 @@ class MainWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    MainWindow(Server *server, QWidget *parent=0);
+    void get_text_callback(string username,string time,string content);
     ~MainWindow();
-private:
-    void chat();
-    AddFriend *addWindow;
+    void ShowChatWindow(string string = "Anon",int index = 0);
+    void callback(vector<struct userinfo> &friends_list);
+    void deleteFriend(string);
+    void addFriend(string);
+    QListWidget *list;
     QStackedWidget *m_cStackedWidget;
+    Server* m_server;
+
+private:  
+    void paintEvent(QPaintEvent*);
+    QPainter *paint;
+
+protected:
+    void closeEvent(QCloseEvent *event);
 
 private slots:
     void AnotherWindow();
-    void ShowChatWindow(QString string = "Anon",int index = 0);
+    void friendBtnOnClicked();
 
 };
 

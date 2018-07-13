@@ -1,0 +1,80 @@
+
+    <head>
+        <style>
+        body {background-color:rgb(250,250,250)}
+        #chat-list{
+
+            margin:20px 0;
+            padding:0 10px;
+            overflow:hidden;
+            overflow-y:auto;
+        }
+        .msg-wrap{
+            margin:10px 0;
+            clear:both;
+        }
+        .msg-wrap:before, .msg-wrap:after{
+            clear:both;
+            content:"";
+            display:table;
+        }
+        .msg-wrap .header{
+            width:29px;
+            height:29px;
+            border:1px solid #ccc;
+            vertical-align:middle;
+        }
+        .msg-wrap.left .header{
+            float: left;
+        }
+        .msg-wrap.right .header{
+            float: right;
+        }
+        .msg{
+            max-width:50%;
+            font-size:13px;
+            letter-spacing:1px;
+            border-radius:5px;
+            padding:8px 5px;
+            position:relative;
+            word-wrap:break-word;
+            word-break:normal;
+        }
+        .left .msg {
+            color:#fff;
+            float: left;
+            background:#349b63;
+            margin-left: 12px;
+        }
+        .left .msg .trigon{
+            top:5px;
+            left:-15px;
+            border-color:transparent #349b63 transparent transparent;
+        }
+        .right .msg{
+            float:right;
+            background:#ddd;
+            margin-right:12px;
+        }
+        .right .msg .trigon {
+            top:5px;
+            right: -15px;
+            border-color:transparent transparent transparent #ddd;
+        }
+        .trigon {
+            width:0;
+            height:0;
+            border-width:10px;
+            border-style:solid;
+            position: absolute;
+            z-index:-1;
+        }
+        </style>
+    </head>
+    <div id="chat-list">
+        <div class="msg-wrap right">
+            <img class="header" src="qrc:/new/img/img/FaceQ.jpg" >
+            <div class="msg">我们一起来聊天吧！<span class="trigon"></span></div>
+        </div>
+
+
