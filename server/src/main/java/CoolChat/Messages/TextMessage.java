@@ -25,13 +25,16 @@ public class TextMessage extends Message {
 	@Override
 	public Message getResult(HashMap<String, IoSession> sessions, IoSession session, DataManager dataManager) {
 		
-		IoSession aSession = sessions.get(userName);
-		if(aSession== null) {
+		
+		if(sessions.get(userName)== null) {
 			System.out.println("this user isn't online or don't exist.");
+			return null;
 		}
-		if(aSession.containsAttribute("login")) {
+		if(sessions.get(userName).containsAttribute("login")) {
 			TextMessage resultMessage=new TextMessage(session.getAttribute("userName").toString(),content);
-			session.write(resultMessage);
+			if(sessions.get(userName)!=null) {
+				sessions.get(userName).write(resultMessage);
+			}
 		}
 		else {
 			//SendingMessageDao sMessageDao=new SendingMessageDao();

@@ -22,6 +22,8 @@ public class RequestFriendMessage extends Message {
 	@Override
 	public Message getResult(HashMap<String, IoSession> sessions, IoSession session, DataManager dataManager) {
 		// 返回发送请求消息
+		System.out.println(targetUserName+" "+remark);
+		
 		String sourceUserName=session.getAttribute("userName").toString();
 		if(sessions.get(sourceUserName)==null) {
 			//查询数据库
@@ -36,6 +38,7 @@ public class RequestFriendMessage extends Message {
 		}
 		else{
 			sessions.get(targetUserName).write(new SendRequestMessage(sourceUserName, this.remark));
+			
 		}
 		return null;
 	}

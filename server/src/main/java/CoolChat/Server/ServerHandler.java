@@ -22,6 +22,7 @@ public class ServerHandler extends IoHandlerAdapter{
     @Override
     public void sessionOpened(IoSession session) throws Exception {
         super.sessionOpened(session);
+        System.out.println("a connection setted");
     }
 
     @Override
@@ -36,7 +37,7 @@ public class ServerHandler extends IoHandlerAdapter{
         {
             session.write(result);
         }
-        System.out.println("messageRecevied 中的getResult运行了，并把结果写进去了");
+        System.out.println("messageRecevied, getresult run");
     }
 
     @Override

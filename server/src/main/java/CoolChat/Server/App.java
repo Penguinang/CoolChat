@@ -33,7 +33,7 @@ public class App
         acceptor.getSessionConfig().setReadBufferSize(2048);
         acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);//set session Idle,both means both write and read
         try{
-            acceptor.bind( new InetSocketAddress("172.16.136.7",9123) );
+            acceptor.bind( new InetSocketAddress("192.168.137.1",9123) );
         	//acceptor.bind( new InetSocketAddress("localhost",9123) );
         }
         catch (Exception e){
