@@ -11,6 +11,8 @@
 #include <QString>
 #include <QCloseEvent>
 using namespace std;
+using Netmodule::Server;
+using Netmodule::userinfo;
 
 namespace Ui {
 class MainWindow;

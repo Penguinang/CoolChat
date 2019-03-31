@@ -8,6 +8,8 @@
 #include <QLineEdit>
 #include <QLabel>
 
+using Netmodule::Server;
+
 class RegisterWindow : public QWidget
 {
     Q_OBJECT

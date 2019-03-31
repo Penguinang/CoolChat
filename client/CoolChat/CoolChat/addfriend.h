@@ -16,6 +16,8 @@
 #include <string>
 #include "mainwindow.h"
 
+using Netmodule::Server;
+
 class MainWindow;
 
 using namespace std ;

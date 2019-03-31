@@ -14,7 +14,7 @@ CC            = gcc
 CXX           = g++
 DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_NO_DEBUG -DQT_WEBENGINEWIDGETS_LIB -DQT_WEBENGINECORE_LIB -DQT_QUICK_LIB -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_WEBCHANNEL_LIB -DQT_QML_LIB -DQT_NETWORK_LIB -DQT_POSITIONING_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fno-plt -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-CXXFLAGS      = -pipe -O2 -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fno-plt -Wall -W -D_REENTRANT -fPIC $(DEFINES)
+CXXFLAGS      = -pipe -O2 -march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fpermissive -fno-plt -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 INCPATH       = -I. -I../../Netmodule/include -I../../Netmodule/include/inc -I../../Netmodule/include/http/inc -I../../Netmodule/include/CxxJDK/efc -I../../Netmodule/include/CxxLog4j -isystem /usr/include/qt -isystem /usr/include/qt/QtWebEngineWidgets -isystem /usr/include/qt/QtWebEngineCore -isystem /usr/include/qt/QtQuick -isystem /usr/include/qt/QtPrintSupport -isystem /usr/include/qt/QtWidgets -isystem /usr/include/qt/QtGui -isystem /usr/include/qt/QtWebChannel -isystem /usr/include/qt/QtQml -isystem /usr/include/qt/QtNetwork -isystem /usr/include/qt/QtPositioning -isystem /usr/include/qt/QtCore -I. -isystem /usr/include/libdrm -I. -I/usr/lib/qt/mkspecs/linux-g++
 QMAKE         = /usr/bin/qmake
 DEL_FILE      = rm -f
@@ -38,7 +38,7 @@ DISTNAME      = CoolChat1.0.0
 DISTDIR = /home/penguinang/code/java/CoolChat/client/CoolChat/CoolChat/.tmp/CoolChat1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-O1 -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -Wl,-rpath-link,/usr/lib
-LIBS          = $(SUBLIBS) -L ../../Netmodule/lib/linux -lNetmodule -lMina -liconv -ldl -lcrypto -lefc64 -leso64 -lQt5WebEngineWidgets -lQt5WebEngineCore -lQt5Quick -lQt5PrintSupport -lQt5Widgets -lQt5Gui -lQt5WebChannel -lQt5Qml -lQt5Network -lQt5Positioning -lQt5Core -lGL -lpthread 
+LIBS          = $(SUBLIBS) -L ../../Netmodule/lib/linux -lNetmodule -lMina -lLogger -liconv -ldl -lcrypto -lefc64 -leso64 -lQt5WebEngineWidgets -lQt5WebEngineCore -lQt5Quick -lQt5PrintSupport -lQt5Widgets -lQt5Gui -lQt5WebChannel -lQt5Qml -lQt5Network -lQt5Positioning -lQt5Core -lGL -lpthread 
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -1033,7 +1033,7 @@ moc_predefs.h: /usr/lib/qt/mkspecs/features/data/dummy.cpp
 compiler_moc_header_make_all: moc_mainwindow.cpp moc_addfriend.cpp moc_loginwindow.cpp moc_registerwindow.cpp moc_chatwindow.cpp moc_applicationwindow.cpp moc_systemwindow.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_mainwindow.cpp moc_addfriend.cpp moc_loginwindow.cpp moc_registerwindow.cpp moc_chatwindow.cpp moc_applicationwindow.cpp moc_systemwindow.cpp
-moc_mainwindow.cpp: Server.h \
+moc_mainwindow.cpp: \
 		../../Netmodule/include/Eio.hh \
 		../../Netmodule/include/CxxJDK/efc/Efc.hh \
 		../../Netmodule/include/CxxJDK/efc/EBase.hh \
@@ -1532,7 +1532,7 @@ moc_mainwindow.cpp: Server.h \
 		/usr/bin/moc
 	/usr/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/penguinang/code/java/CoolChat/client/CoolChat/CoolChat -I/home/penguinang/code/java/CoolChat/client/Netmodule/include -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/inc -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/http/inc -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/CxxJDK/efc -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/CxxLog4j -I/usr/include/qt -I/usr/include/qt/QtWebEngineWidgets -I/usr/include/qt/QtWebEngineCore -I/usr/include/qt/QtQuick -I/usr/include/qt/QtPrintSupport -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtWebChannel -I/usr/include/qt/QtQml -I/usr/include/qt/QtNetwork -I/usr/include/qt/QtPositioning -I/usr/include/qt/QtCore -I/usr/include/c++/8.1.1 -I/usr/include/c++/8.1.1/x86_64-pc-linux-gnu -I/usr/include/c++/8.1.1/backward -I/usr/lib/gcc/x86_64-pc-linux-gnu/8.1.1/include -I/usr/local/include -I/usr/lib/gcc/x86_64-pc-linux-gnu/8.1.1/include-fixed -I/usr/include mainwindow.h -o moc_mainwindow.cpp
 
-moc_addfriend.cpp: Server.h \
+moc_addfriend.cpp: \
 		../../Netmodule/include/Eio.hh \
 		../../Netmodule/include/CxxJDK/efc/Efc.hh \
 		../../Netmodule/include/CxxJDK/efc/EBase.hh \
@@ -2031,7 +2031,7 @@ moc_addfriend.cpp: Server.h \
 		/usr/bin/moc
 	/usr/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/penguinang/code/java/CoolChat/client/CoolChat/CoolChat -I/home/penguinang/code/java/CoolChat/client/Netmodule/include -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/inc -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/http/inc -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/CxxJDK/efc -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/CxxLog4j -I/usr/include/qt -I/usr/include/qt/QtWebEngineWidgets -I/usr/include/qt/QtWebEngineCore -I/usr/include/qt/QtQuick -I/usr/include/qt/QtPrintSupport -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtWebChannel -I/usr/include/qt/QtQml -I/usr/include/qt/QtNetwork -I/usr/include/qt/QtPositioning -I/usr/include/qt/QtCore -I/usr/include/c++/8.1.1 -I/usr/include/c++/8.1.1/x86_64-pc-linux-gnu -I/usr/include/c++/8.1.1/backward -I/usr/lib/gcc/x86_64-pc-linux-gnu/8.1.1/include -I/usr/local/include -I/usr/lib/gcc/x86_64-pc-linux-gnu/8.1.1/include-fixed -I/usr/include addfriend.h -o moc_addfriend.cpp
 
-moc_loginwindow.cpp: Server.h \
+moc_loginwindow.cpp: \
 		../../Netmodule/include/Eio.hh \
 		../../Netmodule/include/CxxJDK/efc/Efc.hh \
 		../../Netmodule/include/CxxJDK/efc/EBase.hh \
@@ -2530,7 +2530,7 @@ moc_loginwindow.cpp: Server.h \
 		/usr/bin/moc
 	/usr/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/penguinang/code/java/CoolChat/client/CoolChat/CoolChat -I/home/penguinang/code/java/CoolChat/client/Netmodule/include -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/inc -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/http/inc -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/CxxJDK/efc -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/CxxLog4j -I/usr/include/qt -I/usr/include/qt/QtWebEngineWidgets -I/usr/include/qt/QtWebEngineCore -I/usr/include/qt/QtQuick -I/usr/include/qt/QtPrintSupport -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtWebChannel -I/usr/include/qt/QtQml -I/usr/include/qt/QtNetwork -I/usr/include/qt/QtPositioning -I/usr/include/qt/QtCore -I/usr/include/c++/8.1.1 -I/usr/include/c++/8.1.1/x86_64-pc-linux-gnu -I/usr/include/c++/8.1.1/backward -I/usr/lib/gcc/x86_64-pc-linux-gnu/8.1.1/include -I/usr/local/include -I/usr/lib/gcc/x86_64-pc-linux-gnu/8.1.1/include-fixed -I/usr/include loginwindow.h -o moc_loginwindow.cpp
 
-moc_registerwindow.cpp: Server.h \
+moc_registerwindow.cpp: \
 		../../Netmodule/include/Eio.hh \
 		../../Netmodule/include/CxxJDK/efc/Efc.hh \
 		../../Netmodule/include/CxxJDK/efc/EBase.hh \
@@ -3029,7 +3029,7 @@ moc_registerwindow.cpp: Server.h \
 		/usr/bin/moc
 	/usr/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/penguinang/code/java/CoolChat/client/CoolChat/CoolChat -I/home/penguinang/code/java/CoolChat/client/Netmodule/include -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/inc -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/http/inc -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/CxxJDK/efc -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/CxxLog4j -I/usr/include/qt -I/usr/include/qt/QtWebEngineWidgets -I/usr/include/qt/QtWebEngineCore -I/usr/include/qt/QtQuick -I/usr/include/qt/QtPrintSupport -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtWebChannel -I/usr/include/qt/QtQml -I/usr/include/qt/QtNetwork -I/usr/include/qt/QtPositioning -I/usr/include/qt/QtCore -I/usr/include/c++/8.1.1 -I/usr/include/c++/8.1.1/x86_64-pc-linux-gnu -I/usr/include/c++/8.1.1/backward -I/usr/lib/gcc/x86_64-pc-linux-gnu/8.1.1/include -I/usr/local/include -I/usr/lib/gcc/x86_64-pc-linux-gnu/8.1.1/include-fixed -I/usr/include registerwindow.h -o moc_registerwindow.cpp
 
-moc_chatwindow.cpp: Server.h \
+moc_chatwindow.cpp: \
 		../../Netmodule/include/Eio.hh \
 		../../Netmodule/include/CxxJDK/efc/Efc.hh \
 		../../Netmodule/include/CxxJDK/efc/EBase.hh \
@@ -3528,7 +3528,7 @@ moc_chatwindow.cpp: Server.h \
 		/usr/bin/moc
 	/usr/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/penguinang/code/java/CoolChat/client/CoolChat/CoolChat -I/home/penguinang/code/java/CoolChat/client/Netmodule/include -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/inc -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/http/inc -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/CxxJDK/efc -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/CxxLog4j -I/usr/include/qt -I/usr/include/qt/QtWebEngineWidgets -I/usr/include/qt/QtWebEngineCore -I/usr/include/qt/QtQuick -I/usr/include/qt/QtPrintSupport -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtWebChannel -I/usr/include/qt/QtQml -I/usr/include/qt/QtNetwork -I/usr/include/qt/QtPositioning -I/usr/include/qt/QtCore -I/usr/include/c++/8.1.1 -I/usr/include/c++/8.1.1/x86_64-pc-linux-gnu -I/usr/include/c++/8.1.1/backward -I/usr/lib/gcc/x86_64-pc-linux-gnu/8.1.1/include -I/usr/local/include -I/usr/lib/gcc/x86_64-pc-linux-gnu/8.1.1/include-fixed -I/usr/include chatwindow.h -o moc_chatwindow.cpp
 
-moc_applicationwindow.cpp: Server.h \
+moc_applicationwindow.cpp: \
 		../../Netmodule/include/Eio.hh \
 		../../Netmodule/include/CxxJDK/efc/Efc.hh \
 		../../Netmodule/include/CxxJDK/efc/EBase.hh \
@@ -4027,7 +4027,7 @@ moc_applicationwindow.cpp: Server.h \
 		/usr/bin/moc
 	/usr/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/penguinang/code/java/CoolChat/client/CoolChat/CoolChat -I/home/penguinang/code/java/CoolChat/client/Netmodule/include -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/inc -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/http/inc -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/CxxJDK/efc -I/home/penguinang/code/java/CoolChat/client/Netmodule/include/CxxLog4j -I/usr/include/qt -I/usr/include/qt/QtWebEngineWidgets -I/usr/include/qt/QtWebEngineCore -I/usr/include/qt/QtQuick -I/usr/include/qt/QtPrintSupport -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtWebChannel -I/usr/include/qt/QtQml -I/usr/include/qt/QtNetwork -I/usr/include/qt/QtPositioning -I/usr/include/qt/QtCore -I/usr/include/c++/8.1.1 -I/usr/include/c++/8.1.1/x86_64-pc-linux-gnu -I/usr/include/c++/8.1.1/backward -I/usr/lib/gcc/x86_64-pc-linux-gnu/8.1.1/include -I/usr/local/include -I/usr/lib/gcc/x86_64-pc-linux-gnu/8.1.1/include-fixed -I/usr/include applicationwindow.h -o moc_applicationwindow.cpp
 
-moc_systemwindow.cpp: Server.h \
+moc_systemwindow.cpp: \
 		../../Netmodule/include/Eio.hh \
 		../../Netmodule/include/CxxJDK/efc/Efc.hh \
 		../../Netmodule/include/CxxJDK/efc/EBase.hh \
@@ -4548,7 +4548,6 @@ compiler_clean: compiler_rcc_clean compiler_moc_predefs_clean compiler_moc_heade
 ####### Compile
 
 main.o: main.cpp loginwindow.h \
-		Server.h \
 		../../Netmodule/include/Eio.hh \
 		../../Netmodule/include/CxxJDK/efc/Efc.hh \
 		../../Netmodule/include/CxxJDK/efc/EBase.hh \
@@ -5043,7 +5042,7 @@ main.o: main.cpp loginwindow.h \
 		registerwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
-mainwindow.o: mainwindow.cpp Server.h \
+mainwindow.o: mainwindow.cpp \
 		../../Netmodule/include/Eio.hh \
 		../../Netmodule/include/CxxJDK/efc/Efc.hh \
 		../../Netmodule/include/CxxJDK/efc/EBase.hh \
@@ -5541,7 +5540,7 @@ mainwindow.o: mainwindow.cpp Server.h \
 		systemwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
 
-addfriend.o: addfriend.cpp Server.h \
+addfriend.o: addfriend.cpp \
 		../../Netmodule/include/Eio.hh \
 		../../Netmodule/include/CxxJDK/efc/Efc.hh \
 		../../Netmodule/include/CxxJDK/efc/EBase.hh \
@@ -6038,7 +6037,7 @@ addfriend.o: addfriend.cpp Server.h \
 		applicationwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o addfriend.o addfriend.cpp
 
-loginwindow.o: loginwindow.cpp Server.h \
+loginwindow.o: loginwindow.cpp \
 		../../Netmodule/include/Eio.hh \
 		../../Netmodule/include/CxxJDK/efc/Efc.hh \
 		../../Netmodule/include/CxxJDK/efc/EBase.hh \
@@ -6534,7 +6533,7 @@ loginwindow.o: loginwindow.cpp Server.h \
 		chatwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o loginwindow.o loginwindow.cpp
 
-registerwindow.o: registerwindow.cpp Server.h \
+registerwindow.o: registerwindow.cpp \
 		../../Netmodule/include/Eio.hh \
 		../../Netmodule/include/CxxJDK/efc/Efc.hh \
 		../../Netmodule/include/CxxJDK/efc/EBase.hh \
@@ -7030,7 +7029,7 @@ registerwindow.o: registerwindow.cpp Server.h \
 		chatwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o registerwindow.o registerwindow.cpp
 
-chatwindow.o: chatwindow.cpp Server.h \
+chatwindow.o: chatwindow.cpp \
 		../../Netmodule/include/Eio.hh \
 		../../Netmodule/include/CxxJDK/efc/Efc.hh \
 		../../Netmodule/include/CxxJDK/efc/EBase.hh \
@@ -7526,7 +7525,7 @@ chatwindow.o: chatwindow.cpp Server.h \
 		chatwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o chatwindow.o chatwindow.cpp
 
-applicationwindow.o: applicationwindow.cpp Server.h \
+applicationwindow.o: applicationwindow.cpp \
 		../../Netmodule/include/Eio.hh \
 		../../Netmodule/include/CxxJDK/efc/Efc.hh \
 		../../Netmodule/include/CxxJDK/efc/EBase.hh \
@@ -8023,7 +8022,7 @@ applicationwindow.o: applicationwindow.cpp Server.h \
 		applicationwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o applicationwindow.o applicationwindow.cpp
 
-systemwindow.o: systemwindow.cpp Server.h \
+systemwindow.o: systemwindow.cpp \
 		../../Netmodule/include/Eio.hh \
 		../../Netmodule/include/CxxJDK/efc/Efc.hh \
 		../../Netmodule/include/CxxJDK/efc/EBase.hh \

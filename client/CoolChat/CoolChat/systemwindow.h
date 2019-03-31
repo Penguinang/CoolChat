@@ -11,6 +11,8 @@
 #include <QWebEngineView>
 #include <mainwindow.h>
 
+using Netmodule::Server;
+
 
 namespace Ui {
 class SystemWindow;

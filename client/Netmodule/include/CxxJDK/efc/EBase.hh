@@ -148,7 +148,12 @@ inline ALWAYS_INLINE es_nullptr_t es_get_nullptr_t() {return es_nullptr_t(0);}
 #endif
 
 #ifndef null
-#define null nullptr
+
+// * fixed here
+// #define null nullptr
+static auto null = nullptr;
+
+
 #endif
 
 #ifndef boolean
@@ -180,11 +185,14 @@ inline ALWAYS_INLINE es_nullptr_t es_get_nullptr_t() {return es_nullptr_t(0);}
 #endif
 
 #ifndef ulong
-#define ulong   unsigned long
+// #define ulong   unsigned long
 #endif
 
 #ifndef uchar
-#define uchar   unsigned char
+
+// * fixed 
+// #define uchar   unsigned char
+
 #endif
 
 #ifdef max

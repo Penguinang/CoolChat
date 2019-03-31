@@ -35,6 +35,7 @@ QPushButton *friends[5];
 int friend_count = 0;
 
 using namespace std;
+using Netmodule::userinfo;
 
 
 MainWindow::MainWindow(Server *server, QWidget *parent):
