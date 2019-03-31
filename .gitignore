@@ -4,3 +4,4 @@ client/Netmodule/test/testServer
 client/Netmodule/test/testClient
 client/CoolChat/build-CoolChat-Desktop_Qt_5_8_0_MSVC2015_64bit-Debug/debug/*
 client/CoolChat/build-CoolChat-Desktop_Qt_5_8_0_MSVC2015_64bit-Debug/release/*
+*/.settings/*
