@@ -68,4 +68,6 @@ INCLUDEPATH += \
 
 LIBS += \
     -L $$NETMODULE_PATH/lib/$$PLATFORM \
-    -lNetmodule -lMina -liconv -ldl -lpthread -lcrypto -lefc64 -leso64
+    -lNetmodule -lMina -lLogger -liconv -ldl -lpthread -lcrypto -lefc64 -leso64
+
+QMAKE_CXXFLAGS += -fpermissive
