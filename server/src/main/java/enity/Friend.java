@@ -10,12 +10,14 @@ public class Friend {
 	// 好友名字叫什么
 	private String friendName;
 
-	// public int getId() {
-	// return id;
-	// }
-	// public void setId(int id) {
-	// this.id = id;
-	// }
+	public Friend() {
+	}
+
+	public Friend(String uname, String fname) {
+		userName = uname;
+		friendName = fname;
+	}
+
 	public String getUserName() {
 		return userName;
 	}
@@ -31,5 +33,4 @@ public class Friend {
 	public void setFriendName(String userName) {
 		this.friendName = userName;
 	}
-
 }

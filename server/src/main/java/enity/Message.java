@@ -13,13 +13,17 @@ public class Message {
 	private String sentUser;//这条消息的发送人
 	private String content;//消息的内容
 	
-	
-//	public int getId() {
-//		return Id;
-//	}
-//	public void setId(int id) {
-//		Id = id;
-//	}
+	public Message(){
+
+	}
+
+	public Message(String _date, String receiver, String sender, String _content){
+		date = _date;
+		receiveUser = receiver;
+		sentUser = sender;
+		content = _content;
+	}
+
 	public String getDate() {
 		return date;
 	}

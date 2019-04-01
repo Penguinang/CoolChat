@@ -13,6 +13,13 @@ public class User {
 	private String passWord;//用户密码
 	//private String friends;//用户好友
 	
+	public User(){
+
+	}
+
+	public User(String uname){
+		userName = uname;
+	}
 	
 	public String getUserName() {
 		return userName;

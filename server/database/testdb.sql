@@ -1,6 +1,6 @@
 -- MySQL dump 10.17  Distrib 10.3.13-MariaDB, for Linux (x86_64)
 --
--- Host: localhost    Database: CoolChat
+-- Host: localhost    Database: testdb
 -- ------------------------------------------------------
 -- Server version	10.3.13-MariaDB-log
 
