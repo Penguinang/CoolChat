@@ -2,6 +2,7 @@
 
 #include "Server.h"
 #include "Message.h"
+#include "ConnectionListener.h"
 
 #define DEBUG_ERROR(s) cerr<<s<<endl
 
@@ -18,24 +19,12 @@ namespace Netmodule{
         delete handler;
     }
 
-    Server::Server(string ip, int port, TextMessage::GetTextCallBack textCallback){
+    Server::Server(string _ip, int _port, TextMessage::GetTextCallBack textCallback) : ip(_ip), port(_port){
         connector = new ENioSocketConnector();
         handler = new ServerHandler();
         connector->setConnectTimeoutMillis(connect_timeout);
         connector->setHandler(handler);
         TextMessage::resultCallBack = textCallback;
-
-        try{
-            EInetSocketAddress addr(ip.c_str(), port);
-            sp<EConnectFuture> future = connector->connect(&addr);
-            future->awaitUninterruptibly();
-            session = future->getSession();
-            DEBUG_ERROR("Server Init Success");
-        }
-        catch(EException e){
-            throw exception();
-            DEBUG_ERROR("!!!!!!!  Cant Connect Server, Init Connection Fail  !!!!!!!");
-        }
     }
 
 
@@ -56,17 +45,18 @@ namespace Netmodule{
      */
     void Server::Login (string uID, string password, LoginMessage::LoginCallBack callback){
         sp<Message> msg = new LoginMessage(EString(uID.c_str()), EString(password.c_str()));
-        EIoBuffer *pb = msg->getEncodedMessage();
-        pb->flip();
-        session->write(pb);
+        try{
+            EInetSocketAddress addr(ip.c_str(), port);
+            future = connector->connect(&addr);
+            future->addListener( new ConnectionListener(this, msg) );
+            DEBUG_ERROR("Connecting Server......");
+        }
+        catch(EException e){
+            throw exception();
+            DEBUG_ERROR("!!!!!!!  Cant Connect Server, Init Connection Fail  !!!!!!!");
+        }
 
-        // Message *msg = new LoginMessage(EString(uID.c_str()), EString(password.c_str()));
-        // EIoBuffer *msg_buffer = msg->getEncodedMessage();
-        // session->write(msg_buffer);
-        // delete msg;
-        DEBUG_ERROR("Login Press");
-        // 绑定函数对象不能使用等号赋值， 所以使用拷贝构造函数，并且将所有的resultCallBack函数改为指针
-        // LoginMessage::resultCallBack = callback;
+        DEBUG_ERROR("Login Pressed");
         LoginMessage::resultCallBack = callback;
         setUid(uID);
     }

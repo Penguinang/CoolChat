@@ -4,30 +4,32 @@ package enity;
  */
 
 public class Friend {
-//	private int id;
-	private String name;
-	private String userName;//是哪个用户的好友
-	
-	
-//	public int getId() {
-//		return id;
-//	}
-//	public void setId(int id) {
-//		this.id = id;
-//	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
+
+	// 是哪个用户的好友
+	private String userName;
+	// 好友名字叫什么
+	private String friendName;
+
+	// public int getId() {
+	// return id;
+	// }
+	// public void setId(int id) {
+	// this.id = id;
+	// }
 	public String getUserName() {
 		return userName;
 	}
-	public void setUserName(String userName) {
-		this.userName = userName;
+
+	public void setUserName(String name) {
+		this.userName = name;
 	}
-	
-	
-	
+
+	public String getFriendName() {
+		return friendName;
+	}
+
+	public void setFriendName(String userName) {
+		this.friendName = userName;
+	}
+
 }

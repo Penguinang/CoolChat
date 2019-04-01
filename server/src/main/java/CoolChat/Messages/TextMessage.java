@@ -6,9 +6,6 @@ import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
 
 import CoolChat.Data.DataManager;
-import dao.SendingMessageDao;
-
-import enity.*;
 
 /**
  * Class TextMessage
@@ -27,20 +24,20 @@ public class TextMessage extends Message {
 		
 		
 		if(sessions.get(userName)== null) {
-			System.out.println("this user isn't online or don't exist.");
-			return null;
+			if(dataManager.queryUserByName(userName) != null){
+				System.out.println("this user isn't online");
+				dataManager.addReceivingMessage(userName,session.getAttribute("userName").toString(),content);
+			}
+			else{
+				System.out.println("this user doesn't exist");
+			}
 		}
-		if(sessions.get(userName).containsAttribute("login")) {
+		else{
 			TextMessage resultMessage=new TextMessage(session.getAttribute("userName").toString(),content);
 			if(sessions.get(userName)!=null) {
 				sessions.get(userName).write(resultMessage);
+				dataManager.sentText(session.getAttribute("userName").toString(), userName, content);
 			}
-		}
-		else {
-			//SendingMessageDao sMessageDao=new SendingMessageDao();
-			//SendingMessage sMessage=new SendingMessage();
-			//sMessageDao.addMessage();
-			dataManager.addReceivingMessage(userName,session.getAttribute("userName").toString(),content);
 		}
 		
 		return null;

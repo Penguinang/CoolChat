@@ -16,7 +16,7 @@ lib: test/testClient
 	cp src/*.o obj
 	cp src/Messages/*.o obj
 	cd obj && ar crv libNetmodule.a *.o && mv libNetmodule.a ../
-	cp libNetmodule lib/linux
+	cp libNetmodule.a lib/linux
 
 clean:
 	rm src/*.o

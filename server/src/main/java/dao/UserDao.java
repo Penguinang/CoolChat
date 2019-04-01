@@ -123,7 +123,7 @@ public class UserDao {
 	public User getUserByName(String userName) {
 		PreparedStatement ps = null;
 		Connection conn = util.getConnection();
-		String sql ="select * from user where userName=?";
+		String sql ="select userName, E_mail from user where userName=? limit 1";
 		ResultSet rs = null;
 		User user = null;
 		try {
@@ -131,12 +131,14 @@ public class UserDao {
 			ps.setString(1, userName);
 			rs = ps.executeQuery();
 			
-			while(rs.next()) {
+			if(rs.next()) {
 				user = new User();
-//				user.setId(rs.getInt("Id"));
-				user.setPassWord(rs.getString("password"));
+				user.setPassWord("*********");
 				user.setUserName(rs.getString("userName"));
 				user.setE_mail(rs.getString("E_mail"));
+			}
+			else{
+				user = null;
 			}
 			rs.close();
 			ps.close();
@@ -145,8 +147,39 @@ public class UserDao {
 			e.printStackTrace();
 		}
 		
-		return user;
+		return user;		
+	}
+
+	public User getUserByNameAndPass(String userName, String password){
+		PreparedStatement ps = null;
+		Connection conn = util.getConnection();
+		String sql ="select userName, E_mail from user where userName=? and password=? limit 1";
+		ResultSet rs = null;
+		User user = null;
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, userName);
+			ps.setString(2, password);
+			rs = ps.executeQuery();
+			
+			if(rs.next()){
+				user = new User();
+				user.setPassWord("*********");
+				user.setUserName(rs.getString("userName"));
+				user.setE_mail(rs.getString("E_mail"));
+			}
+			else{
+				user = null;
+			}
+
+			rs.close();
+			ps.close();
+			conn.close();
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
 		
+		return user;	
 	}
 	
 	public List<User> getAllUser(){

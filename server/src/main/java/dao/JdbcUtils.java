@@ -3,7 +3,6 @@ package dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import com.mysql.cj.jdbc.Driver;
 
 public class JdbcUtils {
 	private String userName;
@@ -14,12 +13,6 @@ public class JdbcUtils {
 		this.userName = "root";
 		this.password="Ren@123";
 		this.url="jdbc:mysql://localhost:3306/CoolChat?characterEncoding=utf8&useSSL=false&serverTimezone=GMT";
-		
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-		}catch(ClassNotFoundException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	public Connection getConnection() {
