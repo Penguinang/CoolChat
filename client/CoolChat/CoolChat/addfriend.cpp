@@ -86,9 +86,9 @@ AddFriend::~AddFriend()
 
 void AddFriend::SearchFriend()
 {
-    auto callback=std::bind(&AddFriend::callback,this,placeholders::_1);
+    auto boundCallBack=std::bind(&AddFriend::callback,this,placeholders::_1);
     //向服务器查询用户列表
-    m_server->QueryInformationByID(input->text().toStdString(),callback);
+    m_server->QueryInformationByID(input->text().toStdString(),boundCallBack);
 }
 
 void AddFriend::callback(vector<struct userinfo> &friends_list)

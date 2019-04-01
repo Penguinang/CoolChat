@@ -1,4 +1,5 @@
 #include "Message.h"
+#include "Server.h"
 
 /**
  *
@@ -87,7 +88,7 @@ namespace Netmodule{
      *      2. LoginMessage
      * -------------------------------------------------------------------------------------------------- */   
     unsigned int LoginMessage::type_num = 2;
-    LoginMessage::LoginCallBack* LoginMessage::resultCallBack = nullptr;
+    LoginMessage::LoginCallBack LoginMessage::resultCallBack;
 
     LoginMessage* LoginMessage::decodeBytes(EIoBuffer *input){
         DEBUG("LoginMessage decode hasnot been implemented\n");
@@ -145,7 +146,7 @@ namespace Netmodule{
         DEBUG(extra.c_str());
         if(LoginMessage::resultCallBack){
 
-            (*LoginMessage::resultCallBack)(success, extra);  
+            LoginMessage::resultCallBack(success, extra);  
         }
         else{
             DEBUG("Get a nullptr LoginResult callback\n");
@@ -221,7 +222,7 @@ namespace Netmodule{
      *      6. TextMessage
      * -------------------------------------------------------------------------------------------------- */  
     unsigned int TextMessage::type_num = 6;
-    TextMessage::GetTextCallBack* TextMessage::resultCallBack = nullptr;
+    TextMessage::GetTextCallBack TextMessage::resultCallBack;
     
     TextMessage* TextMessage::decodeBytes(EIoBuffer *input){
         int nameLength = input->getInt();
@@ -252,7 +253,7 @@ namespace Netmodule{
         // string _time = content.substring(0, 20).c_str();
         string _time = "";
         if(resultCallBack){
-            (*resultCallBack)(username.c_str(), _time, content.c_str());
+            resultCallBack(username.c_str(), _time, content.c_str());
         }
         else{
             DEBUG("Get a nullptr TextMessage callback function\n");
@@ -267,7 +268,7 @@ namespace Netmodule{
      *      7. QueryUserInformationMessage
      * -------------------------------------------------------------------------------------------------- */ 
     unsigned int QueryUserInformationMessage::type_num = 7; 
-    QueryUserInformationMessage::QueryUserInformationCallBack* QueryUserInformationMessage::resultCallBack = nullptr;
+    QueryUserInformationMessage::QueryUserInformationCallBack QueryUserInformationMessage::resultCallBack = nullptr;
 
     QueryUserInformationMessage* QueryUserInformationMessage::decodeBytes(EIoBuffer *input){
         DEBUG("QueryUserInformation decode hasnot been implemented\n");
@@ -319,7 +320,7 @@ namespace Netmodule{
             for(int i = 0; i<userList.size(); i++){
                 user_info_list.push_back({userList[i].c_str()});
             }
-            (*QueryUserInformationMessage::resultCallBack)(user_info_list);
+            QueryUserInformationMessage::resultCallBack(user_info_list);
         }
         else{
             DEBUG("Get a nullptr QueryUserInformation callback\n");
@@ -380,7 +381,7 @@ namespace Netmodule{
 
     void SendRequestMessage::processMessage(){
         if(TextMessage::resultCallBack){
-            (*TextMessage::resultCallBack)("server friend request", username.c_str(), note.c_str());
+            TextMessage::resultCallBack("server friend request", username.c_str(), note.c_str());
         }
         else{
             DEBUG("Get a nullptr TextMessage callback\n");
@@ -446,7 +447,7 @@ namespace Netmodule{
 
     void SendReplyMessage::processMessage(){
         if(TextMessage::resultCallBack){
-            (*TextMessage::resultCallBack)("server friend reply", username.c_str(), success ? "true" : "false");
+            TextMessage::resultCallBack("server friend reply", username.c_str(), success ? "true" : "false");
         }
         else{
             DEBUG("Get a nullptr TextMessage callback\n");
@@ -486,7 +487,7 @@ namespace Netmodule{
      *      14. QueryFriendListMessage
      * -------------------------------------------------------------------------------------------------- */
     unsigned int QueryFriendListMessage::type_num = 14;         
-    QueryFriendListMessage::QueryFriendListMessageCallBack*  QueryFriendListMessage::resultCallBack = nullptr;
+    QueryFriendListMessage::QueryFriendListMessageCallBack QueryFriendListMessage::resultCallBack = nullptr;
 
     QueryFriendListMessage* QueryFriendListMessage::decodeBytes(EIoBuffer *input){
         DEBUG("QueryFriendListMessage decode hasnot been implemented\n");
@@ -537,7 +538,7 @@ namespace Netmodule{
             friend_list.push_back(user_info);
         }
         if(QueryFriendListMessage::resultCallBack){
-            (*QueryFriendListMessage::resultCallBack)(friend_list);
+            QueryFriendListMessage::resultCallBack(friend_list);
         }
         else{
             DEBUG("Get a nullptr QueryFriendList callback\n");

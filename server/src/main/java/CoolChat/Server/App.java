@@ -31,7 +31,7 @@ public class App {
         acceptor.getSessionConfig().setReadBufferSize(2048);
         acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);// set session Idle,both means both write and
                                                                           // read
-        String ip = args.length >= 1 ? args[1] : "10.14.222.28";
+        String ip = args.length >= 1 ? args[1] : "127.0.0.1";
         int port = args.length >= 2 ? Integer.parseInt(args[2]) : 9123;
         try {
             acceptor.bind(new InetSocketAddress(ip, port));

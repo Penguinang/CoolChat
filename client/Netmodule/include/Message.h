@@ -3,12 +3,14 @@
 
 #include <string>
 #include <vector>
+#include <functional>
 using namespace std;
 
-#include "Server.h"
+// #include "Server.h"
 #include "Eio.hh"
 
 namespace Netmodule{
+    struct userinfo;
 
 /* --------------------------------------------------------------------------------------------------
  *      Message base
@@ -50,8 +52,9 @@ namespace Netmodule{
     class LoginMessage : public Message{
     public:
         // typedef void (*LoginCallBack) (bool success, string extra);
-        typedef std::_Bind<void (LoginWindow::*(LoginWindow*, std::_Placeholder<1>, std::_Placeholder<2>))(bool, std::__cxx11::basic_string<char>)> LoginCallBack ;
-        static LoginCallBack *resultCallBack;
+        // typedef std::_Bind<void (LoginWindow::*(LoginWindow*, std::_Placeholder<1>, std::_Placeholder<2>))(bool, std::__cxx11::basic_string<char>)> LoginCallBack ;
+        typedef function<void(bool, string)> LoginCallBack;
+        static LoginCallBack resultCallBack;
 
     private: 
         static unsigned int type_num;
@@ -117,9 +120,9 @@ namespace Netmodule{
  * -------------------------------------------------------------------------------------------------- */  
     class TextMessage : public Message{
     public:
-        // typedef void(*GetTextCallBack)(string username, string time, string content);
-        typedef std::_Bind<void (MainWindow::*(MainWindow*, std::_Placeholder<1>, std::_Placeholder<2>, std::_Placeholder<3>))(std::__cxx11::basic_string<char>, std::__cxx11::basic_string<char>, std::__cxx11::basic_string<char>)> GetTextCallBack;
-        static GetTextCallBack *resultCallBack;
+        typedef function<void(string, string, string)> GetTextCallBack;
+        
+        static GetTextCallBack resultCallBack;
     private:
         static unsigned int type_num;
         EString username;
@@ -140,8 +143,9 @@ namespace Netmodule{
     class QueryUserInformationMessage : public Message{
     public:
         // typedef void (*QueryUserInformationCallBack) (vector<struct userinfo> &user_list);
-        typedef _Bind<void (AddFriend::*(AddFriend*, std::_Placeholder<1>))(std::vector<Netmodule::userinfo>&)> QueryUserInformationCallBack;
-        static QueryUserInformationCallBack *resultCallBack;
+        // typedef _Bind<void (AddFriend::*(AddFriend*, std::_Placeholder<1>))(std::vector<Netmodule::userinfo>&)> QueryUserInformationCallBack;
+        typedef function<void(vector<userinfo>&)> QueryUserInformationCallBack;
+        static QueryUserInformationCallBack resultCallBack;
     private:
         static unsigned int type_num;
         EString keyword;
@@ -267,8 +271,9 @@ namespace Netmodule{
     class QueryFriendListMessage : public Message{
     public:
         // typedef void (*QueryFriendListMessageCallBack) (vector<struct userinfo> &friends_list);
-        typedef _Bind<void (MainWindow::*(MainWindow*, std::_Placeholder<1>))(std::vector<userinfo>&)> QueryFriendListMessageCallBack;
-        static QueryFriendListMessageCallBack *resultCallBack;
+        // typedef _Bind<void (MainWindow::*(MainWindow*, std::_Placeholder<1>))(std::vector<userinfo>&)> QueryFriendListMessageCallBack;
+        typedef function<void(vector<userinfo> &friends_list)> QueryFriendListMessageCallBack;
+        static QueryFriendListMessageCallBack resultCallBack;
     private:
         static unsigned int type_num;
 

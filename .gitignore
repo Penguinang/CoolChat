@@ -21,3 +21,6 @@ client/Netmodule/lib/linux/
 client/Netmodule/lib/linux/
 client/CoolChat/CoolChat/CoolChat.pro.user.*
 client/CoolChat/CoolChat/CoolChat
+client/Netmodule/.vscode
+client/Netmodule/.vscode/
+client/Netmodule/libNetmodule.a

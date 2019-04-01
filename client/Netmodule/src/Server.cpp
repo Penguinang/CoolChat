@@ -18,12 +18,12 @@ namespace Netmodule{
         delete handler;
     }
 
-    Server::Server(string ip, int port, std::_Bind<void (MainWindow::*(MainWindow*, std::_Placeholder<1>, std::_Placeholder<2>, std::_Placeholder<3>))(std::__cxx11::basic_string<char>, std::__cxx11::basic_string<char>, std::__cxx11::basic_string<char>)> textCallback){
+    Server::Server(string ip, int port, TextMessage::GetTextCallBack textCallback){
         connector = new ENioSocketConnector();
         handler = new ServerHandler();
         connector->setConnectTimeoutMillis(connect_timeout);
         connector->setHandler(handler);
-        TextMessage::resultCallBack = new std::_Bind<void (MainWindow::*(MainWindow*, std::_Placeholder<1>, std::_Placeholder<2>, std::_Placeholder<3>))(std::__cxx11::basic_string<char>, std::__cxx11::basic_string<char>, std::__cxx11::basic_string<char>)>(textCallback);
+        TextMessage::resultCallBack = textCallback;
 
         try{
             EInetSocketAddress addr(ip.c_str(), port);
@@ -67,14 +67,14 @@ namespace Netmodule{
         DEBUG_ERROR("Login Press");
         // 绑定函数对象不能使用等号赋值， 所以使用拷贝构造函数，并且将所有的resultCallBack函数改为指针
         // LoginMessage::resultCallBack = callback;
-        LoginMessage::resultCallBack = new std::_Bind<void (LoginWindow::*(LoginWindow*, std::_Placeholder<1>, std::_Placeholder<2>))(bool, std::__cxx11::basic_string<char>)>(callback);
+        LoginMessage::resultCallBack = callback;
         setUid(uID);
     }
 
     /**
      * QueryFriendListMessageCallBacl     -->   void (*) (vector<struct userinfo> &friends_list)
      */
-    void Server::GetFriendList (_Bind<void (MainWindow::*(MainWindow*, std::_Placeholder<1>))(std::vector<userinfo>&)> callback){
+    void Server::GetFriendList (QueryFriendListMessage::QueryFriendListMessageCallBack callback){
         sp<Message> msg = new QueryFriendListMessage();
         EIoBuffer *pb = msg->getEncodedMessage();
         pb->flip();
@@ -86,13 +86,13 @@ namespace Netmodule{
         // EIoBuffer *msg_buffer = msg->getEncodedMessage();
         // session->write(msg_buffer);
         // delete msg;
-        QueryFriendListMessage::resultCallBack = new _Bind<void (MainWindow::*(MainWindow*, std::_Placeholder<1>))(std::vector<userinfo>&)>(callback);
+        QueryFriendListMessage::resultCallBack = callback;
     }
 
     /**
      * QueryUserInformationCallBack   -->   void (*) (vector<struct userinfo> &user_list
      */
-    void Server::QueryInformationByID (string uID, _Bind<void (AddFriend::*(AddFriend*, std::_Placeholder<1>))(std::vector<Netmodule::userinfo>&)> callback){
+    void Server::QueryInformationByID (string uID, QueryUserInformationMessage::QueryUserInformationCallBack callback){
         sp<Message> msg = new QueryUserInformationMessage(EString(uID.c_str()));
         EIoBuffer *pb = msg->getEncodedMessage();
         pb->flip();
@@ -102,7 +102,7 @@ namespace Netmodule{
         // EIoBuffer *msg_buffer = msg->getEncodedMessage();
         // session->write(msg_buffer);
         // delete msg;
-        QueryUserInformationMessage::resultCallBack = new _Bind<void (AddFriend::*(AddFriend*, std::_Placeholder<1>))(std::vector<Netmodule::userinfo>&)>(callback);
+        QueryUserInformationMessage::resultCallBack = callback;
     }
 
     /**
@@ -149,7 +149,7 @@ namespace Netmodule{
     }
     
 
-    void Server::SendText (string uID, string content, std::_Bind<void (ChatWindow::*(ChatWindow*, std::_Placeholder<1>))(bool)> callback){
+    void Server::SendText (string uID, string content, function<void(bool)> callback){
         sp<Message> msg = new TextMessage(EString(uID.c_str()), EString(content.c_str()));
         EIoBuffer *pb = msg->getEncodedMessage();
         pb->flip();

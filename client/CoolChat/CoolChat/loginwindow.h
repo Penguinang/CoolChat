@@ -14,7 +14,7 @@
 
 class RegisterWindow;
 
-const string ip = "10.14.222.28";
+const string ip = "127.0.0.1";
 const int port = 9123;
 
 namespace Ui {
