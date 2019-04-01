@@ -15,28 +15,28 @@ abstract public class Message {
 	public Message () { };
 
     /**
-     * 杩斿洖瀵硅娑堟伅鐨勫鐞嗙粨鏋�
-     * @param        sessions 宸茬粡鐧诲綍鐨勬墍鏈変細璇�
-     * @param        session 褰撳墠鐢ㄦ埛鐨勪細璇�
-     * @param        dataManager 绠＄悊鎵�鏈夌殑鏁版嵁
+     * 返回对该消息的处理结果
+     * @param        sessions 已经登录的所有会话
+     * @param        session 当前用户的会话
+     * @param        dataManager 管理所有的数据
      */
     public abstract Message getResult(HashMap<String, IoSession> sessions, IoSession session,DataManager dataManager);
 
 
     /**
-     * 鑾峰緱缂栫爜鍚庣殑娑堟伅
+     * 获得编码后的消息
      */
     public abstract byte[] getProtocolEncodedBytes();
 
 
     /**
-     * 灏嗗瓧鑺傛暟缁勮В鐮佷负Message瀵硅薄銆�
-     * @param        in 鍘熷瀛楄妭鏁扮粍
+     * 将字节数组解码为Message对象。
+     * @param        in 原始字节数组
      */
     public static Message getDecodedMessage(IoBuffer input) throws Exception
     {
-    	//瀵规秷鎭繘琛岃В鐮�
-    	//TODO锛氳繖涓湴鏂硅浠旂粏妫�鏌ユ鏌�
+    	//对消息进行解码
+    	//TODO：这个地方要仔细检查检查
     	byte messageType = input.get();
     	
     	switch(messageType) {
@@ -211,7 +211,7 @@ abstract public class Message {
 
 
     /**
-     * @param        rawBytes 鍘熷瀛楄妭鏁扮粍
+     * @param        rawBytes 原始字节数组
      */
     protected void internalGetDecodedMessage(byte[] rawBytes)
     {

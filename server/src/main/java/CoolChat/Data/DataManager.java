@@ -14,11 +14,11 @@ public class DataManager {
     public DataManager () { };
     
     /**
-     * ע��
+     * 用户注册
      * @return       boolean
-     * @param        name �û���
-     * @param        email �û��ʼ�
-     * @param        password �û�����
+     * @param        name 待检用户名
+     * @param        email 注册邮箱
+     * @param        password 密码
      */
     public boolean signUp(String name, String email, String password)
     {
@@ -38,10 +38,10 @@ public class DataManager {
 
 
     /**
-     * ��¼�������ݿ���鿴�Ƿ��д��û�
+     * 登录，检查用户名和密码是否匹配，成功返回真，否则返回假
      * @return       boolean
-     * @param        userName �û���
-     * @param        password �û�����
+     * @param        userName 用户名
+     * @param        password 密码
      */
     public boolean login(String userName, String password)
     {
@@ -73,11 +73,11 @@ public class DataManager {
     }
     
     /**
-     * ��ȡ�û�δ���յ���Ϣ���ŵ�sourceUserNameList��contentList��
+     * 拉取某用户未接受的所有消息，若有消息返回真,否则返回假
      * @return       boolean
-     * @param        userName ������ȡδ������Ϣ���û����û���
-     * @param        sourceUserNameList �õ���˭�������͵��û�����List
-     * @param        contentList ����List���������sourceUserһһ��Ӧ
+     * @param        userName 查询的用户名
+     * @param        sourceUserNameList 发送消息的用户数组
+     * @param        contentList 消息内容的数组
      */
     public boolean pullUserMessage(String userName,List<String> sourceUserNameList, List<String> contentList)
     {
@@ -107,10 +107,10 @@ public class DataManager {
 
 
     /**
-     * ���ݿⷽ���sendText�轫ÿ�η��͵���Ϣ�浽���ݿ�����Ϊ��Ϣ��¼
-     * @param        sourceUserName ������Ϣ���û�
-     * @param        destUserName ������Ϣ���û�
-     * @param        content ��Ϣ����
+     * 将消息记录下来
+     * @param        sourceUserName 发出消息用户
+     * @param        destUserName 目标用户
+     * @param        content 消息内容，包含一个时间前缀
      */
     public void sendText(String sourceUserName, String destUserName, String content)
     {
@@ -126,9 +126,9 @@ public class DataManager {
 
 
     /**
-     * ͨ���ؼ����������û�
-     * @return        List<User> ������ؼ�����ص��û�List
-     * @param        keyword �ؼ���
+     * 按照关键字查询用户
+     * @param        keyword 查询目标关键字
+     * @param        userNameList 查询结果的数组
      */
     public List<User> queryUser(String keyword)
     {
@@ -149,10 +149,10 @@ public class DataManager {
 
 
     /**
-     * �ı���ѵĹ�ϵ��ʵ���������ݿ���ɾ���������Ӧ�ļ�¼
-     * @param        user1  the main user
-     * @param        user2  the friend
-     * @param        isFriend �Ƿ��Ǻ���
+     * 修改用户之间的好友关系
+     * @param        user1 用户甲
+     * @param        user2 用户乙
+     * @param        isFriend 新的好友关系：是否是好友
      */
     public void changeUserRelation(String user1, String user2, boolean isFriend)
     {
@@ -171,9 +171,9 @@ public class DataManager {
 
 
     /**
-     * ͨ���û�����������û������к���
-     * @param        userName ����ȡ���ѵ��û���
-     * @return       List<Friend> ��������û������к��ѣ�����List�� 
+     * 查找该用户的所有好友名单
+     * @param        userName 目标用户名
+     * @param        friendList 查询的结果，一个好友名单的数组
      */
     public List<Friend> queryFriendList(String userName)
     {

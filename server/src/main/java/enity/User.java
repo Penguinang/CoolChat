@@ -1,17 +1,17 @@
 package enity;
 /*
- * 鐢ㄦ埛绫伙細鐢ㄦ潵瀹氫箟鐢ㄦ埛鐨勬暟鎹粨鏋�
- * author锛氫换鏄嗕粦
- * 20180703 鍒涘缓
- * 鏈�鍚庢洿鏀癸細20180703
+ * 用户类：用来定义用户的数据结构
+ * author：任昆仑
+ * 20180703 创建
+ * 最后更改：20180703
  */
 
 public class User {
-	//private int Id;//鐢ㄦ埛Id
-	private String userName;//鐢ㄦ埛鍚�
+	//private int Id;//用户Id
+	private String userName;//用户名
 	private String E_mail;
-	private String passWord;//鐢ㄦ埛瀵嗙爜
-	//private String friends;//鐢ㄦ埛濂藉弸
+	private String passWord;//用户密码
+	//private String friends;//用户好友
 	
 	
 	public String getUserName() {

@@ -36,7 +36,7 @@ public class SignUpMessage extends Message {
 
 	@Override
 	public byte[] getProtocolEncodedBytes() {
-		// 缂栧彿涓�0
+		// 编号为0
 		byte messageType = 0;
 		int userNameLength=userName.length();
 		byte[] userNameB=userName.getBytes();
