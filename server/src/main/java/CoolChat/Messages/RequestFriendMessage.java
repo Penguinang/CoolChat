@@ -30,9 +30,9 @@ public class RequestFriendMessage extends Message {
 			if (dataManager.queryUserByName(targetUserName) == null) {
 				System.out.println("there is no user named " + targetUserName);
 			} else {
-				// TODO 对方不在线时候保存消息
-				// dataManager.addReceivingMessage(receiveUser, sentUser, content);
-				// 存到数据库中
+				// TODO 对方不在线时候保存消息，对于其他所有类型的消息都要这样做
+				dataManager.addReceivingMessage(targetUserName, session.getAttribute("userName").toString(),
+						new String(this.getProtocolEncodedBytesZeroEnded()));
 			}
 
 		} else {
@@ -56,6 +56,26 @@ public class RequestFriendMessage extends Message {
 		ret.put(targetUserNameLengthB);
 		ret.putInt(remarkLength);
 		ret.put(remarkB);
+
+		return ret.array();
+	};
+
+	public byte[] getProtocolEncodedBytesZeroEnded() {
+		// 编号9 请求好友一阶段
+		byte messageType = 9;
+		int targetUserNameLength = this.targetUserName.length();
+		byte[] targetUserNameLengthB = this.targetUserName.getBytes();
+		int remarkLength = this.remark.length();
+		byte[] remarkB = this.remark.getBytes();
+
+		IoBuffer ret = IoBuffer.allocate(1 + 4 + targetUserNameLength + 4 + remarkLength+2);
+		ret.put(messageType);
+		ret.putInt(targetUserNameLength + 1);
+		ret.put(targetUserNameLengthB);
+		ret.put((byte) '\0');
+		ret.putInt(remarkLength + 1);
+		ret.put(remarkB);
+		ret.put((byte) '\0');
 
 		return ret.array();
 	};

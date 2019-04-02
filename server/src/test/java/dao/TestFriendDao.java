@@ -1,5 +1,6 @@
 package dao;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.Connection;
@@ -19,6 +20,7 @@ public class TestFriendDao {
 
     @Before
     public void setUp() {
+        JdbcUtils.setDburl("jdbc:mysql://localhost:3306/testdb?characterEncoding=utf8&useSSL=false&serverTimezone=GMT");
         fdao = new FriendDao();
         util = new JdbcUtils();
     }
@@ -30,14 +32,14 @@ public class TestFriendDao {
 
         PreparedStatement ps = null;
         Connection conn = util.getConnection();
-        String sql = "select userName, friendName from friend where userName='testuser1xxx' and friendName='testuser2xxx'";
+        String sql = "select count(*) from friend where (userName='testuser1xxx' and friendName='testuser2xxx') or (userName='testuser2xxx' and friendName='testuser1xxx')";
         ps = conn.prepareStatement(sql);
         ResultSet rs = ps.executeQuery();
         assertTrue("Insertion fail ", rs.next() != false);
+        assertEquals(rs.getInt("count(*)"), 2);
 
-        sql = "delete from friend where userName='testuser1xxx' and friendName='testuser2xxx'";
+        sql = "delete from friend where (userName='testuser1xxx' and friendName='testuser2xxx') or (userName='testuser2xxx' and friendName='testuser1xxx')";
         ps = conn.prepareStatement(sql);
-        assertTrue(ps.execute());
     }
 
     @Test
@@ -46,7 +48,7 @@ public class TestFriendDao {
         Connection conn = util.getConnection();
         String sql = null;
         try {
-            sql = "insert into friend values('testuser1xxx', 'testuser2xxx')";
+            sql = "insert into friend values('testuser1xxx', 'testuser2xxx'), ('testuser2xxx', 'testuser1xxx')";
             ps = conn.prepareStatement(sql);
             ps.execute();
         } catch (SQLIntegrityConstraintViolationException e) {

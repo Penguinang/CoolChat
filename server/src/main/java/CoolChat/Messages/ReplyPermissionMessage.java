@@ -23,7 +23,6 @@ public class ReplyPermissionMessage extends Message {
 
 	@Override
 	public Message getResult(HashMap<String, IoSession> sessions, IoSession session, DataManager dataManager) {
-		// TODO
 		String sourceUserName=session.getAttribute("userName").toString();
 		
 		if(sessions.get(targetUserName)!=null) {

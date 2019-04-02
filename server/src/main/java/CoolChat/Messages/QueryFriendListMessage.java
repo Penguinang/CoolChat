@@ -19,7 +19,6 @@ public class QueryFriendListMessage extends Message {
 
 	@Override
 	public Message getResult(HashMap<String, IoSession> sessions, IoSession session, DataManager dataManager) {
-		// TODO 把当前用户的好友从数据库中拿出来， 放在那个qfresult中
 		String userName = session.getAttribute("userName").toString();
 		List<Friend> list = dataManager.queryFriendList(userName);
 

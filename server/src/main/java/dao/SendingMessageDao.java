@@ -23,7 +23,6 @@ public class SendingMessageDao {
 	 * 将信息插入到信息表中
 	 */
 	public void addMessage(Message message) {
-		//TODO 将用户插入数据库中的表
 		PreparedStatement ps =null;
 		Connection conn = util.getConnection();
 		String sql ="insert into s_message(date,sentUser,receiveUser,content) values(?,?,?,?)";
@@ -81,10 +80,7 @@ public class SendingMessageDao {
 		
 		}
 	
-	
-	
 	 public void deleteMessageByUser(String userName) {
-		//TODO 删除特定用户的待接受消息
 		PreparedStatement ps =null;
 		Connection conn = util.getConnection();
 		String sql="delete from s_message where receiveUser=?";

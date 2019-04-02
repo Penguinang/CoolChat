@@ -33,7 +33,12 @@ public class PullMessage extends Message {
 		for (int i = 0; i < messageNumber; i++) {
 			sourceUserName[i] = sourceUserNameList.get(i);
 			content[i] = contentList.get(i);
-			dataManager.sentText(sourceUserName[i], userName, content[i]);
+			String rawMsg = content[i].substring("YYYY-MM-DD-HH-mm-ss".length());
+			IoBuffer ib = IoBuffer.allocate(rawMsg.length());
+			ib.put(rawMsg.getBytes());
+
+			if (Message.peekMessageType(ib) == TextMessage.class)
+				dataManager.sentText(sourceUserName[i], userName, content[i]);
 		}
 
 		return new PullResultMessage(messageNumber, sourceUserName, content);

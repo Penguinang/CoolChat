@@ -13,6 +13,7 @@ public class TestJdbcUtils {
 
     @Before
     public void setUp() {
+        JdbcUtils.setDburl("jdbc:mysql://localhost:3306/testdb?characterEncoding=utf8&useSSL=false&serverTimezone=GMT");
         jdbutil = new JdbcUtils();
     }
 

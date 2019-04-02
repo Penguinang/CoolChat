@@ -24,7 +24,6 @@ public class MessageDao {
 	 * 将信息插入到信息表中
 	 */
 	public void addMessage(Message message) {
-		// TODO 将用户插入数据库中的表
 		PreparedStatement ps = null;
 		Connection conn = util.getConnection();
 		String sql = "insert into message(date,sentUser,receiveUser,content) values(?,?,?,?)";

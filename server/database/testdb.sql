@@ -85,6 +85,7 @@ CREATE TABLE `s_message` (
 
 LOCK TABLES `s_message` WRITE;
 /*!40000 ALTER TABLE `s_message` DISABLE KEYS */;
+INSERT INTO `s_message` VALUES ('1999-01-02-23-10-40','Name1','Name2','testcontent');
 /*!40000 ALTER TABLE `s_message` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -108,7 +109,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('poo','poo@poo.com','password'),('bar','bar@bar.com','password'),('foo','foo@foo.com','password');
+INSERT INTO `user` VALUES ('poo','poo@poo.com','password'),('bar','bar@bar.com','password'),('foo','foo@foo.com','password'),('Name1','Email1','Password1'),('Name2','Name2@Name2.com','password');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -121,4 +122,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-04-01 23:18:22
+-- Dump completed on 2019-04-02 15:07:44

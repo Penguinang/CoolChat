@@ -19,7 +19,6 @@ public class LoginResultMessage extends Message {
 
 	@Override
 	public Message getResult(HashMap<String, IoSession> sessions, IoSession session, DataManager dataManager) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

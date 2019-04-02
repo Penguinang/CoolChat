@@ -26,19 +26,26 @@ public class FriendDao {
 	public void addFriendToUser(Friend friend) {
 		PreparedStatement ps = null;
 		Connection conn = util.getConnection();
-		String sql = "insert into friend (userName, friendName) values(?,?), (?,?)";
+		String sql = "insert into friend (userName, friendName) values(?,?)";
 		try {
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, friend.getUserName());
 			ps.setString(2, friend.getFriendName());
-			ps.setString(3, friend.getFriendName());
-			ps.setString(4, friend.getUserName());
-			ps.execute();
+			ps.execute();			
+			ps.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setString(2, friend.getUserName());
+			ps.setString(1, friend.getFriendName());
+			ps.execute();			
 			ps.close();
 			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		}		
 	}
 
 	/*
@@ -53,8 +60,8 @@ public class FriendDao {
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, friend.getUserName());
 			ps.setString(2, friend.getFriendName());
-			ps.setString(3, friend.getFriendName());
-			ps.setString(4, friend.getUserName());
+			ps.setString(3, friend.getUserName());
+			ps.setString(4, friend.getFriendName());
 
 			ps.execute();
 			ps.close();

@@ -28,7 +28,7 @@ public class DataManager {
 		user.setPassWord(password);
 		user.setE_mail(email);
 		UserDao userDao = new UserDao();
-		if (userDao.getUserByName(user.getUserName()) == null) {// TODO������ط��ж��Ƿ���ȷ��
+		if (userDao.getUserByName(user.getUserName()) == null) {
 			userDao.addUser(user);
 			return true;
 		} else {
@@ -63,6 +63,7 @@ public class DataManager {
 		message.setReceiveUser(receiveUser);
 		message.setSentUser(sentUser);
 		message.setContent(content);
+		message.setDate("");
 		sendingMessageDao.addMessage(message);
 	}
 
@@ -75,14 +76,13 @@ public class DataManager {
 	 * @param contentList        消息内容的数组
 	 */
 	public boolean pullUserMessage(String userName, List<String> sourceUserNameList, List<String> contentList) {
-		// TODO ������߼��Ƿ���ȷ��
 		SendingMessageDao sendingMessageDao = new SendingMessageDao();
 		User user = null;
 		UserDao userDao = new UserDao();
 		user = userDao.getUserByName(userName);
 
 		List<Message> list = null;
-		if ((list = sendingMessageDao.listAllMessageOfReceiveUser(user)) != null) {
+		if (user != null && (list = sendingMessageDao.listAllMessageOfReceiveUser(user)) != null) {
 			for (int i = 0; i < list.size(); i++) {
 				Message message = list.get(i);
 				sourceUserNameList.add(i, message.getSentUser());
@@ -108,8 +108,9 @@ public class DataManager {
 		Message message = new Message();
 		message.setReceiveUser(destUserName);
 		message.setSentUser(sourceUserName);
-		int endIndex = 17;
+		int endIndex = "YYYY-MM-DD-HH-mm-ss".length();
 		message.setDate(content.substring(0, endIndex));
+		message.setContent(content.substring(endIndex));
 
 		messageDao.addMessage(message);
 	}
@@ -141,7 +142,7 @@ public class DataManager {
 	 * @param userName 要查询的用户名
 	 * @return 如果存在返回用户对象，不存在返回空
 	 */
-	public User queryUserByName(String userName){
+	public User queryUserByName(String userName) {
 		UserDao userDao = new UserDao();
 		return userDao.getUserByName(userName);
 	}
@@ -156,9 +157,8 @@ public class DataManager {
 	public void changeUserRelation(String user1, String user2, boolean isFriend) {
 		FriendDao friendDao = new FriendDao();
 		Friend friend = new Friend();
-		User user = new User();
-		friend.setUserName(user2);// user2�Ǻ���
-		user.setUserName(user1);// user1�Ǳ���ӻ�ɾ�����ѵ��û�
+		friend.setUserName(user1);
+		friend.setFriendName(user2);
 		if (isFriend) {
 			friendDao.addFriendToUser(friend);
 		} else {
